@@ -1,7 +1,7 @@
 # Code from: https://github.com/michaeljsmalley/dotfiles/blob/master/makesymlinks.sh
 dir=~/dotfiles
 olddir=~/dotfiles_old
-files="zshrc config/i3/config config/kitty/kitty.conf"
+files="zshrc config/i3/config config/kitty/kitty.conf compton.conf"
 
 echo "Creating $olddir for backup of any existing dotfiles in ~"
 mkdir -p $olddir
