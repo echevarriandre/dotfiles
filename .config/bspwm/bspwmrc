@@ -1,0 +1,46 @@
+#! /bin/sh
+
+# Autostart
+sxhkd &
+picom &
+nitrogen --restore &
+~/.screenlayout/fix-positions.sh &
+~/.config/polybar/launch.sh &
+
+# Monitors
+bspc monitor HDMI-1 -d 1 3 5 7 9 
+bspc monitor DP-1 -d 2 4 6 8 0
+
+# BSPWM Configuration
+bspc config border_width    2
+bspc config window_gap     12
+bspc config top_padding    0
+bspc config border_radius  12
+
+bspc config split_ratio           0.52
+bspc config borderless_monocle    true
+bspc config gapless_monocle       true
+bspc config focus_follows_pointer true
+bspc config history_aware_focus  true
+bspc config pointer_modifier mod4
+bspc config pointer_action1 move
+bspc config pointer_action2 resize_side
+bspc config pointer_action3 resize_corner
+bspc config remove_disabled_monitors true
+bspc config merge_overlapping_monitors true
+
+# source the colors.
+. "${HOME}/.cache/wal/colors.sh"
+
+# Set the border colors.
+bspc config normal_border_color "$color15"
+bspc config active_border_color "$color15"
+bspc config focused_border_color "$color1"
+bspc config presel_feedback_color "$color1"
+
+bspc rule -a Gimp desktop='^8' state=floating follow=on
+bspc rule -a Chromium desktop='^2'
+bspc rule -a mplayer2 state=floating
+bspc rule -a keepassxc state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
