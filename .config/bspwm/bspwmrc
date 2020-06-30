@@ -6,6 +6,8 @@ picom &
 nitrogen --restore &
 ~/.screenlayout/fix-positions.sh &
 ~/.config/polybar/launch.sh &
+razer-cli -a &
+dunst &
 
 # Monitors
 bspc monitor HDMI-1 -d 1 3 5 7 9 
@@ -22,7 +24,7 @@ bspc config borderless_monocle    true
 bspc config gapless_monocle       true
 bspc config focus_follows_pointer true
 bspc config history_aware_focus  true
-bspc config pointer_modifier mod4
+bspc config pointer_modifier mod1
 bspc config pointer_action1 move
 bspc config pointer_action2 resize_side
 bspc config pointer_action3 resize_corner

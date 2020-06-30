@@ -57,6 +57,26 @@ super + Escape
 # bspwm hotkeys
 #
 
+# rotate windows
+F1
+	bspc node @/ -R 90
+
+# circulate windows
+F2
+	bspc node @/ -C forward
+
+# flip windows horizontal
+F3
+	bspc node @/ -F horizontal
+
+# flip windows vertical
+F4
+	bspc node @/ -F vertical
+
+# balance windows
+F5
+	bspc node @/ -B
+
 # quit/restart bspwm
 super + alt + {q,r}
 	bspc {quit,wm -r}
@@ -96,6 +116,10 @@ super + ctrl + {m,x,y,z}
 # focus the node in the given direction
 super + {_,shift + }{h,j,k,l}
 	bspc node -{f,s} {west,south,north,east}
+
+# balance windows
+super + {_,shift + }{Left,Down,Up,Right}
+	bspc mode -{f,s} {west,south,north,east}
 
 # focus the node for the given path jump
 super + {p,b,comma,period}
