@@ -17,6 +17,7 @@ import System.Exit (exitSuccess)
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Renamed (renamed, Rename(Replace))
 import XMonad.Layout.LimitWindows (limitWindows, increaseLimit, decreaseLimit)
+import XMonad.Layout.ResizableTile
 
 myFont :: String
 myFont = "xft:mononoki Nerd Font:bold:size=9:antialias=true:hinting=true"
@@ -35,14 +36,23 @@ myBorderWidth :: Dimension
 myBorderWidth = 2          -- Sets border width for windows
 
 myNormColor :: String
-myNormColor   = "#292d3e"  -- Border color of normal windows
+myNormColor   = "#000"  -- Border color of normal windows
 
 myFocusColor :: String
 myFocusColor  = "#bbc5ff"  -- Border color of focused windows
 
-myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
+myWorkspaces :: [String]
+myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+myStartupHook :: X ()
+myStartupHook = do
+          spawnOnce "nitrogen --restore &"            -- restore wallpaper
+          spawnOnce "autorandr -c &"                  -- auto set monitor order based on saved configuration
+          spawnOnce "picom -CG &"
+
 myManageHook = composeAll
-     [ className =? "keepassxc" --> doFloat
+     [ className =? "KeePassXC" --> doFloat
+     , className =? "discord" --> doFloat
      ]
 
 myKeys :: [(String, X ())]
@@ -58,19 +68,19 @@ myKeys =
         , ("M-S-a", killAll)                         -- Kill all windows on current workspace
 
     -- Windows Navigation
-        , ("M-m", windows W.focusMaster)     -- Move focus to the master window
-        , ("M-j", windows W.focusDown)       -- Move focus to the next window
-        , ("M-k", windows W.focusUp)         -- Move focus to the prev window
-        , ("M-S-m", windows W.swapMaster)    -- Swap the focused window and the master window
-        , ("M-S-j", windows W.swapDown)      -- Swap focused window with next window
-        , ("M-S-k", windows W.swapUp)        -- Swap focused window with prev window
-        , ("M-<Backspace>", promote)         -- Moves focused window to master, others maintain order
-        , ("M-S-<Tab>", rotSlavesDown)      -- Rotate all windows except master and keep focus in place
-        , ("M-C-<Tab>", rotAllDown)         -- Rotate all the windows in the current stack
+        , ("M-m", windows W.focusMaster)            -- Move focus to the master window
+        , ("M-k", windows W.focusDown)              -- Move focus to the next window
+        , ("M-j", windows W.focusUp)                -- Move focus to the prev window
+        , ("M-S-m", windows W.swapMaster)           -- Swap the focused window and the master window
+        , ("M-S-k", windows W.swapDown)             -- Swap focused window with next window
+        , ("M-S-j", windows W.swapUp)               -- Swap focused window with prev window
+        , ("M-<Backspace>", promote)                -- Moves focused window to master, others maintain order
+        , ("M-S-<Tab>", rotSlavesDown)              -- Rotate all windows except master and keep focus in place
+        , ("M-C-<Tab>", rotAllDown)                 -- Rotate all the windows in the current stack
 
     -- Workspaces
-        , ("M-.", nextScreen)  -- Switch focus to next monitor
-        , ("M-,", prevScreen)  -- Switch focus to prev monitor
+        , ("M-.", nextScreen)                       -- Switch focus to next monitor
+        , ("M-,", prevScreen)                       -- Switch focus to prev monitor
     
     -- Multimedia Keys
         --, ("<XF86AudioPlay>", spawn "cmus toggle")
@@ -84,7 +94,8 @@ myKeys =
     -- Applications
         , ("M-f", spawn "firefox")
         , ("M-e", spawn "thunar")
-        , ("M-<Space>", spawn "dmenu_run")
+        , ("M-<Space>", spawn "rofi -show run")
+        , ("M-C-<Space>", spawn "rofi -show")
     ]
 
 myDeletedKeys :: [(String)]
@@ -93,37 +104,29 @@ myDeletedKeys =
     , ("M-S-q")     -- Remove default quit xmonad
     ]
 
--- mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
--- mySpacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
+mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
+mySpacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
--- -- Defining a bunch of layouts, many that I don't use.
--- tall = renamed [Replace "tall"]
---     $ limitWindows 12
---     $ mySpacing 8
---     $ ResizableTall 1 (3/100) (1/2) []
+-- Define gaps and limit windows
+tall     = renamed [Replace "tall"]
+           $ limitWindows 6
+           $ mySpacing 8
+           $ ResizableTall 1 (3/100) (1/2) []
 
---     where
---     myTabConfig = def { fontName            = "xft:Mononoki Nerd Font:regular:pixelsize=11"
---                       , activeColor         = "#292d3e"
---                       , inactiveColor       = "#3e445e"
---                       , activeBorderColor   = "#292d3e"
---                       , inactiveBorderColor = "#292d3e"
---                       , activeTextColor     = "#ffffff"
---                       , inactiveTextColor   = "#d0d0d0"
---                       }
-
--- myLayoutHook = myDefaultLayout
---              where
---                 myDefaultLayout = tall
+myLayoutHook = myDefaultLayout
+             where
+                myDefaultLayout = tall
 
 main :: IO ()
 main = do
     xmonad $ ewmh def
         {
-            manageHook = ( isFullscreen --> doFullFloat ) <+> myManageHook
+            manageHook =  myManageHook
             , modMask               = myModMask
             , terminal              = myTerminal
-            -- , layoutHook            = myLayoutHook
+            , layoutHook            = myLayoutHook
+            , startupHook           = myStartupHook
+            , workspaces            = myWorkspaces
             , borderWidth           = myBorderWidth
             , normalBorderColor     = myNormColor
             , focusedBorderColor    = myFocusColor
