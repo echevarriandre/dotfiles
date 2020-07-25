@@ -4,7 +4,7 @@
 
 # terminal emulator
 super + Return
-	kitty
+	alacritty
 
 # program launcher
 super + @space
@@ -25,7 +25,7 @@ super + F3
 	discord
 
 super + e
-	kitty ranger
+	alacritty ranger
 
 # volume
 XF86Audio{RaiseVolume,LowerVolume}
