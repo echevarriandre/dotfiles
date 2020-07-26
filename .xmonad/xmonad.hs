@@ -50,6 +50,7 @@ myStartupHook = do
           spawnOnce "autorandr -c &"                  -- auto set monitor order based on saved configuration
           spawnOnce "xsetroot -cursor_name left_ptr"  -- remove X cursor https://wiki.haskell.org/Xmonad/Frequently_asked_questions#Setting_the_X_cursor
           spawnOnce "picom -CG &"
+          spawnOnce "redshift &"
 
 myManageHook = composeAll
      [ className =? "KeePassXC" --> doFloat
