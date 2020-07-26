@@ -91,7 +91,8 @@ myKeys =
         , ("<XF86AudioMute>",   spawn "amixer set Master toggle")
         , ("<XF86AudioLowerVolume>", spawn "amixer set Master 5%- unmute")
         , ("<XF86AudioRaiseVolume>", spawn "amixer set Master 5%+ unmute")
-        , ("<Print>", spawn "scrot -u /tmp/screenshot-$(date +%F_%T).png -e 'xclip -selection c -t image/png < $f'")
+        , ("<Print>", spawn "scrot -u ~/Pictures/screenshots/$(date +%F_%T).png -e 'xclip -selection c -t image/png < $f'")
+        , ("C-<Print>", spawn "sleep 0.2; scrot -s -f ~/Pictures/screenshots/$(date +%F_%T).png -e 'xclip -selection c -t image/png < $f'")
 
     -- Applications
         , ("M-f", spawn "firefox")
