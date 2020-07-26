@@ -33,3 +33,11 @@ vim -> [dracula theme](https://draculatheme.com/vim)
 Install arch: https://www.youtube.com/watch?v=UiYS8xWFXLY
 Install xmonad: https://www.youtube.com/watch?v=JmPLbZQRgas
 
+### # Fonts
+Source: https://github.com/ryanoasis/nerd-fonts
+[Mononoki Nerd Font](https://aur.archlinux.org/packages/nerd-fonts-mononoki/)
+[DroidSansMono Nerd Font](https://aur.archlinux.org/packages/nerd-fonts-droid-sans-mono/)
+[MesloLGLDZ Nerd Font](https://aur.archlinux.org/packages/nerd-fonts-meslo/)
+
+Emojis: noto-fonts-emoji
+Chinese, Japanese, etc: noto-fonts-cjk
