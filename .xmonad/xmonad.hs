@@ -1,23 +1,28 @@
 -- Heavily based on https://gitlab.com/dwt1/dotfiles/-/tree/master/.xmonad
 
 import XMonad
-import Data.Monoid
-import qualified XMonad.StackSet as W
+
 import XMonad.Actions.Promote
 import XMonad.Actions.RotSlaves (rotSlavesDown, rotAllDown)
-import XMonad.Layout.Spacing
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Util.EZConfig (additionalKeysP, removeKeysP)
-import XMonad.Util.SpawnOnce
 import XMonad.Actions.CopyWindow (kill1, killAllOtherCopies)
 import XMonad.Actions.CycleWS (moveTo, shiftTo, WSType(..), nextScreen, prevScreen)
 import XMonad.Actions.WithAll (sinkAll, killAll)
+
+import XMonad.Util.EZConfig (additionalKeysP, removeKeysP)
+import XMonad.Util.SpawnOnce
+
 import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat)
-import System.Exit (exitSuccess)
+import XMonad.Hooks.EwmhDesktops
+
+import XMonad.Layout.Spacing
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Renamed (renamed, Rename(Replace))
 import XMonad.Layout.LimitWindows (limitWindows, increaseLimit, decreaseLimit)
 import XMonad.Layout.ResizableTile
+
+import Data.Monoid
+import qualified XMonad.StackSet as W
+import System.Exit (exitSuccess)
 
 myFont :: String
 myFont = "xft:mononoki Nerd Font:bold:size=9:antialias=true:hinting=true"
@@ -99,6 +104,12 @@ myKeys =
         , ("M-e", spawn "thunar")
         , ("M-<Space>", spawn "rofi -show run")
         , ("M-C-<Space>", spawn "rofi -show")
+        , ("M-c", spawn "code")
+        , ("M-a", spawn "keepassxc")
+        , ("M-d", spawn "discord")
+
+        , ("M-S-<Escape>", spawn "reboot")
+        , ("M-<Escape>", spawn "shutdown now")
     ]
 
 myDeletedKeys :: [(String)]
