@@ -55,6 +55,7 @@ myStartupHook = do
           spawnOnce "autorandr -c &"                  -- auto set monitor order based on saved configuration
           spawnOnce "xsetroot -cursor_name left_ptr"  -- remove X cursor https://wiki.haskell.org/Xmonad/Frequently_asked_questions#Setting_the_X_cursor
           spawnOnce "setxkbmap -option compose:ralt"  -- set compose key to write accented characters
+          spawnOnce "xinput --set-prop 9 'libinput Accel Speed' -0.65"  -- set mouse speed
           spawnOnce "picom -CG &"
           spawnOnce "redshift &"
 
