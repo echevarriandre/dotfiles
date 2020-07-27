@@ -54,6 +54,7 @@ myStartupHook = do
           spawnOnce "nitrogen --restore &"            -- restore wallpaper
           spawnOnce "autorandr -c &"                  -- auto set monitor order based on saved configuration
           spawnOnce "xsetroot -cursor_name left_ptr"  -- remove X cursor https://wiki.haskell.org/Xmonad/Frequently_asked_questions#Setting_the_X_cursor
+          spawnOnce "setxkbmap -option compose:ralt"  -- set compose key to write accented characters
           spawnOnce "picom -CG &"
           spawnOnce "redshift &"
 

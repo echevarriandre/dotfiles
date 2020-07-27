@@ -20,9 +20,12 @@
 ### # Useful commands
 | Command | Purpose |
 | :------------- | :----------: |
-| `setxkbmap -option compose:ralt` | Set compose key to right alt |
-| `chsh -s $(which zsh)` | Set zsh as default shell |
+| `setxkbmap -option compose:ralt` | set compose key to right alt |
+| `chsh -s $(which zsh)` | set zsh as default shell |
 | `xsetroot -cursor_name left_ptr` | remove X cursor |
+| `xinput list` | view connected devices |
+| `xinput list-props {MOUSE_ID}` | view details about specified device |
+| `xinput --set-prop {MOUSE_ID} 'libinput Accel Speed' [-1, 1]` | change mouse speed |
 
 ### # Dependencies
 
