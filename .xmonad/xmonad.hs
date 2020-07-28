@@ -34,35 +34,36 @@ import System.IO (hPutStrLn)
 myFont :: String
 myFont = "xft:mononoki Nerd Font:bold:size=9:antialias=true:hinting=true"
 
+-- Sets modkey to super/windows key
 myModMask :: KeyMask
-myModMask = mod4Mask       -- Sets modkey to super/windows key
+myModMask = mod4Mask
 
+-- Sets default terminal
 myTerminal :: String
-myTerminal = "alacritty"   -- Set`s default terminal
+myTerminal = "alacritty"
 
-myBrowser :: String
-myBrowser = "firefox"               -- Sets firefox as browser for tree select
--- myBrowser = myTerminal ++ " -e lynx " -- Sets lynx as browser for tree select
-
+-- Sets border width for windows
 myBorderWidth :: Dimension
-myBorderWidth = 2          -- Sets border width for windows
+myBorderWidth = 2
 
+-- Border color of normal windows
 myNormColor :: String
-myNormColor   = "#000"  -- Border color of normal windows
+myNormColor   = "#000"
 
+ -- Border color of focused windows
 myFocusColor :: String
-myFocusColor  = "#bbc5ff"  -- Border color of focused windows
+myFocusColor  = "#ff79c6"
 
 myWorkspaces :: [String]
-myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+myWorkspaces = ["web", "code", "term", "4", "5", "6", "7", "8", "9"]
 
 myStartupHook :: X ()
 myStartupHook = do
-        spawnOnce "nitrogen --restore &"            -- restore wallpaper
-        spawnOnce "autorandr -c &"                  -- auto set monitor order based on saved configuration
-        spawnOnce "xsetroot -cursor_name left_ptr"  -- remove X cursor https://wiki.haskell.org/Xmonad/Frequently_asked_questions#Setting_the_X_cursor
-        spawnOnce "setxkbmap -option compose:ralt"  -- set compose key to write accented characters
-        spawnOnce "xinput --set-prop 9 'libinput Accel Speed' -0.65"  -- set mouse speed
+        spawnOnce "nitrogen --restore &"                                -- restore wallpaper
+        spawnOnce "autorandr -c &"                                      -- auto set monitor order based on saved configuration
+        spawnOnce "xsetroot -cursor_name left_ptr"                      -- remove X cursor https://wiki.haskell.org/Xmonad/Frequently_asked_questions#Setting_the_X_cursor
+        spawnOnce "setxkbmap -option compose:ralt"                      -- set compose key to write accented characters
+        spawnOnce "xinput --set-prop 9 'libinput Accel Speed' -0.65"    -- set mouse speed
         spawnOnce "picom -CG &"
         spawnOnce "redshift &"
 
@@ -96,7 +97,7 @@ myKeys =
     -- Xmonad
         ("M-C-r", spawn "xmonad --recompile"),      -- Recompiles xmonad
         ("M-S-r", spawn "xmonad --restart"),        -- Restarts xmonad
-        ("M-S-M1-q", io exitSuccess),                  -- Quits xmonad
+        ("M-S-M1-q", io exitSuccess),               -- Quits xmonad
         ("M-<Return>", spawn myTerminal),
 
     -- Windows
@@ -140,17 +141,17 @@ myKeys =
         ("M-<Escape>", spawn "shutdown now"),
 
     -- Layouts
-        ("M-S-<Tab>", rotSlavesDown),              -- Rotate all windows except master and keep focus in place
-        ("M-C-<Tab>", rotAllDown),                 -- Rotate all the windows in the current stack
-        ("M-<KP_Multiply>", sendMessage (IncMasterN 1)),   -- Increase number of clients in master pane
-        ("M-<KP_Divide>", sendMessage (IncMasterN (-1)))  -- Decrease number of clients in master pane
+        ("M-S-<Tab>", rotSlavesDown),                       -- Rotate all windows except master and keep focus in place
+        ("M-C-<Tab>", rotAllDown),                          -- Rotate all the windows in the current stack
+        ("M-<KP_Multiply>", sendMessage (IncMasterN 1)),    -- Increase number of clients in master pane
+        ("M-<KP_Divide>", sendMessage (IncMasterN (-1)))    -- Decrease number of clients in master pane
 
     ]
 
 myDeletedKeys :: [(String)]
 myDeletedKeys = 
-    [ ("M-p")       -- Remove default open menu
-    -- , ("M-S-q")     -- Remove default quit xmonad
+    [ ("M-p")        -- Remove default open menu
+    , ("M-S-q")      -- Remove default quit xmonad
     ]
 
 main :: IO ()
@@ -168,16 +169,35 @@ main = do
             borderWidth           = myBorderWidth,
             normalBorderColor     = myNormColor,
             focusedBorderColor    = myFocusColor,
-            logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
-                            { ppOutput = \x -> hPutStrLn xmproc0 x >> hPutStrLn xmproc1 x
-                            , ppCurrent = xmobarColor "#c3e88d" "" . wrap "[" "]" -- Current workspace in xmobar
-                            , ppVisible = xmobarColor "#c3e88d" ""                -- Visible but not current workspace
-                            , ppHidden = xmobarColor "#82AAFF" "" . wrap "*" ""   -- Hidden workspaces in xmobar
-                            , ppHiddenNoWindows = xmobarColor "#c792ea" ""        -- Hidden workspaces (no windows)
-                            , ppTitle = xmobarColor "#b3afc2" "" . shorten 60     -- Title of active window in xmobar
-                            , ppSep =  "<fc=#666666> <fn=2>:</fn> </fc>"                     -- Separators in xmobar
-                            , ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"  -- Urgent workspace
-                            , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
-                            }
+            logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP {
+                ppOutput = \x -> hPutStrLn xmproc0 x >> hPutStrLn xmproc1 x,
+
+                -- Current workspace in xmobar
+                ppCurrent = xmobarColor "#c3e88d" "" . wrap "[" "]",
+
+                -- Visible but not current workspace
+                ppVisible = xmobarColor "#c3e88d" "",
+
+                -- Hidden workspaces in xmobar
+                ppHidden = xmobarColor "#82AAFF" "" . wrap "*" "",
+
+                -- Hidden workspaces (no windows)
+                ppHiddenNoWindows = xmobarColor "#77578c" "",
+                ppLayout  = (
+                    \layout -> case layout of
+                    "tall" -> ""
+                ),
+
+                -- Title of active window in xmobar
+                ppTitle = xmobarColor "#b3afc2" "" . shorten 60,
+
+                -- Separators in xmobar
+                ppSep =  "<fc=#666666> <fn=2></fn> </fc>",
+
+                -- Urgent workspace
+                ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!",
+                
+                ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
+            }
 
         } `additionalKeysP` myKeys `removeKeysP` myDeletedKeys
