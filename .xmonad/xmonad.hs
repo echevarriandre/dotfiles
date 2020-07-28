@@ -107,14 +107,14 @@ myKeys =
         ("M-m", windows W.focusMaster),            -- Move focus to the master window
         ("M-k", windows W.focusDown),              -- Move focus to the next window
         ("M-j", windows W.focusUp),                -- Move focus to the prev window
-        ("M-S-m", windows W.swapMaster),           -- Swap the focused window and the master window
+        -- ("M-S-m", windows W.swapMaster),           -- Swap the focused window and the master window
         ("M-S-k", windows W.swapDown),             -- Swap focused window with next window
         ("M-S-j", windows W.swapUp),               -- Swap focused window with prev window
         ("M-<Backspace>", promote),                -- Moves focused window to master, others maintain order
 
     -- Workspaces
-        ("M-.", nextScreen),                       -- Switch focus to next monitor
         ("M-,", prevScreen),                       -- Switch focus to prev monitor
+        ("M-.", nextScreen),                       -- Switch focus to next monitor
     
     -- Multimedia Keys
         --, ("<XF86AudioPlay>", spawn "cmus toggle")
@@ -175,7 +175,7 @@ main = do
                             , ppHidden = xmobarColor "#82AAFF" "" . wrap "*" ""   -- Hidden workspaces in xmobar
                             , ppHiddenNoWindows = xmobarColor "#c792ea" ""        -- Hidden workspaces (no windows)
                             , ppTitle = xmobarColor "#b3afc2" "" . shorten 60     -- Title of active window in xmobar
-                            , ppSep =  "<fc=#666666> <fn=2></fn> </fc>"                     -- Separators in xmobar
+                            , ppSep =  "<fc=#666666> <fn=2>:</fn> </fc>"                     -- Separators in xmobar
                             , ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"  -- Urgent workspace
                             , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
                             }
