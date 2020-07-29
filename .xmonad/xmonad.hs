@@ -75,6 +75,7 @@ myManageHook = composeAll
      [ 
         className =? "KeePassXC" --> doFloat,
         className =? "discord" --> doFloat,
+        title =? "Calculator" --> doFloat,
         title =? "Nitrogen" --> doFloat
      ] <+> manageDocks
 

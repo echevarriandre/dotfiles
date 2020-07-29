@@ -41,12 +41,16 @@
 | <kbd>super</kbd>+<kbd>shift</kbd>+<kbd>k</kbd> | Swap focused window with next window |
 | <kbd>super</kbd>+<kbd>shift</kbd>+<kbd>j</kbd> | Swap focused window with prev window |
 | <kbd>super</kbd>+<kbd>backspace</kbd> | Moves focused window to master |
+| <kbd>super</kbd>+<kbd>shift</kbd>+<kbd>w</kbd> | Send window to monitor 1 |
+| <kbd>super</kbd>+<kbd>shift</kbd>+<kbd>e</kbd> | Send window to monitor 0 |
 
 ##### Workspaces
 | Key binding | Action |
 | --: | :--: |
 | <kbd>super</kbd>+<kbd>,</kbd> | Switch focus to prev monitor |
 | <kbd>super</kbd>+<kbd>.</kbd> | Switch focus to next monitor |
+| <kbd>super</kbd>+<kbd>w</kbd> | Switch focus to monitor 1 |
+| <kbd>super</kbd>+<kbd>e</kbd> | Switch focus to monitor 0 |
 
 ##### System
 | Key binding | Action |
@@ -61,6 +65,17 @@
 | <kbd>super</kbd>+<kbd>lctrl</kbd>+<kbd>tab</kbd> | Rotate all windows including master |
 | <kbd>super</kbd>+<kbd>kb_multiply</kbd> | Increase number of windows in master |
 | <kbd>super</kbd>+<kbd>kb_divide</kbd> | Decrease number of windows in master |
+
+##### Mouse
+| Key binding | Action |
+| --: | :--: |
+| <kbd>super</kbd>+<kbd>button1</kbd> | drag window (float) |
+| <kbd>super</kbd>+<kbd>button2</kbd> | resize window (float) |
+| <kbd>super</kbd>+<kbd>button3</kbd> | promote window to master |
+| <kbd>super</kbd>+<kbd>button4</kbd> | expand horizontally master size |
+| <kbd>super</kbd>+<kbd>button5</kbd> | shrink horizontally master size |
+| <kbd>super</kbd>+<kbd>shift</kbd>+<kbd>button4</kbd> | expand vertically slave size |
+| <kbd>super</kbd>+<kbd>shift</kbd>+<kbd>button5</kbd> | shrink vertically slave size |
 
 
 

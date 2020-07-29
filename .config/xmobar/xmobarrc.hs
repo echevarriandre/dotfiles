@@ -39,7 +39,7 @@ Config {
 
             -- Runs custom script to check for pacman updates.
             -- This script is in my dotfiles repo in .local/bin.
-            Run Com "pacupdate" [] "" 36000,
+            Run Com "pacupdate" [] "" 3000,
 
             -- Runs a standard shell command 'uname -r' to get kernel version
             Run Com "uname" ["-r"] "" 3600,
