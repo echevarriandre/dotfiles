@@ -1,16 +1,13 @@
 -- http://projects.haskell.org/xmobar/
 
 Config { 
-        font = "xft:Ubuntu:weight=bold:pixelsize=11:antialias=true:hinting=true",
-
+        font = "xft:DroidSansMono Nerd Font Mono:weight=bold:pixelsize=12:antialias=true:hinting=false",
         additionalFonts = [
-            "xft:Mononoki Nerd Font:pixelsize=11:antialias=true:hinting=true",
-            "xft:Mononoki Nerd Font:pixelsize=16:antialias=true:hinting=true",
-            "xft:Font Awesome 5 Free Solid:pixelsize=11"
+            "xft:Font Awesome 5 Free Solid:pixelsize=12"
         ],
         bgColor = "#000",
         fgColor = "#ff79c6",
-        position = Static { xpos = 0 , ypos = 0, width = 1920, height = 24 },
+        position = Static { xpos = 1920 , ypos = 0, width = 1920, height = 24 },
         lowerOnStart = True,
         hideOnStart = False,
         allDesktops = True,
@@ -22,23 +19,23 @@ Config {
                 
             -- Network up and down
             Run Network "enp0s31f6" [
-                "-t", "<fn=3>\xf0ab</fn> <rx>kb  <fn=3>\xf0aa</fn> <tx>kb"
+                "-t", "<fn=1>\xf0ab</fn> <rx>kb <fn=1>\xf0aa</fn> <tx>kb"
             ] 20,
 
             -- Cpu usage in percent
             Run Cpu [
-                "-t", "<fn=3>\xf108</fn> cpu: (<total>%)",
+                "-t", "<fn=1>\xf108</fn> cpu: (<total>%)",
                 "-H","50",
                 "--high","red"
             ] 20,
 
             -- Ram used number and percent
             Run Memory [
-                "-t", "<fn=3>\xf233</fn> mem: <used>M (<usedratio>%)"
+                "-t", "<fn=1>\xf233</fn> mem: <used>M (<usedratio>%)"
             ] 20,
 
             -- Disk space free
-            Run DiskU [("/", "<fn=3>\xf0c7</fn> hdd: <free> free")] [] 60,
+            Run DiskU [("/", "<fn=1>\xf0c7</fn> hdd: <free> free")] [] 60,
 
             -- Runs custom script to check for pacman updates.
             -- This script is in my dotfiles repo in .local/bin.
@@ -63,16 +60,16 @@ Config {
                 ("considerable cloudiness", "\xf740")
             ]
             [
-                "-t", "<fn=3><skyConditionS></fn> <tempC>°C (<hour>)"
+                "-t", "<fn=1><skyConditionS></fn> <tempC>°C"
             ] 36000,
 
             Run Alsa "default" "Master"
             [
-                "-t", "<fn=3><status></fn>  <volume>",
+                "-t", "<fn=1><status></fn> <volume>",
                 "--", "--on", "", "--off", "\xf6a9",
                 "-h", "\xf028",
                 "-m", "\xf027",
-                "-l", "\xf026"--
+                "-l", "\xf026"
             ],
 
             -- Prints out the left side items such as workspaces, layout, etc.
@@ -80,5 +77,5 @@ Config {
         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "    %UnsafeStdinReader% } <fc=#8BE9FD> %date%  </fc> { <fc=#fee11a> %LPMR% <fn=2></fn></fc> <fc=#FFB86C>%cpu% </fc> <fc=#FF5555> %memory% </fc> <fc=#82AAFF> %disku% </fc> <fc=#c3e88d> %enp0s31f6% </fc> <fc=#e1acff><fn=3></fn>  %pacupdate% %alsa:default:Master%  </fc>"
+        , template = "  %UnsafeStdinReader% } <fc=#8BE9FD> %date% </fc>  { <fc=#fee11a> %LPMR% </fc> <fc=#FFB86C>%cpu% </fc><fc=#FF5555> %memory% </fc><fc=#82AAFF> %disku% </fc><fc=#c3e88d> %enp0s31f6% </fc><fc=#e1acff><fn=1></fn> %pacupdate% %alsa:default:Master%  </fc>"
         }
