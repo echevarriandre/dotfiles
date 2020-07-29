@@ -10,7 +10,7 @@ import XMonad.Actions.WithAll (sinkAll, killAll)
 import XMonad.Actions.UpdatePointer
 
 import XMonad.Util.Cursor as Cur
-import XMonad.Util.EZConfig (additionalKeysP, removeKeysP)
+import XMonad.Util.EZConfig (additionalKeysP, removeKeysP, additionalMouseBindings)
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Run (runProcessWithInput, safeSpawn, spawnPipe)
 
@@ -29,6 +29,7 @@ import XMonad.Layout.LimitWindows (limitWindows, increaseLimit, decreaseLimit)
 import XMonad.Layout.ResizableTile
 
 import Data.Monoid
+import Data.Map (Map(), fromList)
 import qualified XMonad.StackSet as W
 import System.Exit (exitSuccess)
 import System.IO (hPutStrLn)
@@ -110,9 +111,9 @@ myKeys =
         ("M-k", windows W.focusDown),              -- Move focus to the next window
         ("M-j", windows W.focusUp),                -- Move focus to the prev window
         -- ("M-S-m", windows W.swapMaster),           -- Swap the focused window and the master window
+        ("M-<Backspace>", promote),                -- Moves focused window to master, others maintain order
         ("M-S-k", windows W.swapDown),             -- Swap focused window with next window
         ("M-S-j", windows W.swapUp),               -- Swap focused window with prev window
-        ("M-<Backspace>", promote),                -- Moves focused window to master, others maintain order
 
     -- Workspaces
         ("M-,", prevScreen),                       -- Switch focus to prev monitor
@@ -145,8 +146,27 @@ myKeys =
         ("M-S-<Tab>", rotSlavesDown),                       -- Rotate all windows except master and keep focus in place
         ("M-C-<Tab>", rotAllDown),                          -- Rotate all the windows in the current stack
         ("M-<KP_Multiply>", sendMessage (IncMasterN 1)),    -- Increase number of clients in master pane
-        ("M-<KP_Divide>", sendMessage (IncMasterN (-1)))    -- Decrease number of clients in master pane
+        ("M-<KP_Divide>", sendMessage (IncMasterN (-1))),    -- Decrease number of clients in master pane
+        ("M-h", sendMessage Shrink),                       -- Shrink horiz window width
+        ("M-l", sendMessage Expand),                       -- Expand horiz window width
+        ("M-C-j", sendMessage MirrorShrink),               -- Shrink vert window width
+        ("M-C-k", sendMessage MirrorExpand),               -- Exoand vert window width
 
+        (("M-button4"), sendMessage Shrink)
+        -- ((0, 5), sendMessage Expand)
+    ] ++
+    [
+        -- Change screen order to use with SUPER+[w, e]
+        (mask ++ "M-" ++ [key], screenWorkspace scr >>= flip whenJust (windows . action))
+         | (key, scr)  <- zip "we" [1,0] -- was [0,1,2]
+         , (action, mask) <- [ (W.view, "") , (W.shift, "S-")]
+    ]
+
+myMouseKeys = [
+    ((myModMask, button4), const $ sendMessage Expand),
+    ((myModMask, button5), const $ sendMessage Shrink),
+    ((myModMask .|. shiftMask, button4), const $ sendMessage MirrorExpand),
+    ((myModMask .|. shiftMask, button5), const $ sendMessage MirrorShrink)
     ]
 
 myDeletedKeys :: [(String)]
@@ -154,9 +174,6 @@ myDeletedKeys =
     [ ("M-p")        -- Remove default open menu
     , ("M-S-q")      -- Remove default quit xmonad
     ]
-
--- xmproc0 = spawnPipe "xmobar -x 0 /home/oxy/.config/xmobar/xmobar0.hs"
--- xmproc1 = spawnPipe "xmobar -x 0 /home/oxy/.config/xmobar/xmobar1.hs"
 
 barCreator :: DynamicStatusBar
 barCreator (S sid) = spawnPipe $ "xmobar --screen " ++ show sid ++ " /home/oxy/.config/xmobar/xmobarrc.hs"
@@ -196,4 +213,4 @@ main = do
             focusedBorderColor      = myFocusColor,
             logHook                 = workspaceHistoryHook <+> myLogHook <+> multiPP myLogPPActive myLogPP,
             handleEventHook         = dynStatusBarEventHook barCreator barDestroyer
-        } `additionalKeysP` myKeys `removeKeysP` myDeletedKeys
+        } `additionalKeysP` myKeys `removeKeysP` myDeletedKeys `additionalMouseBindings` myMouseKeys

@@ -15,7 +15,7 @@ Config {
         iconRoot = ".",  -- default: "."
         commands = [ 
             -- Time and date
-            Run Date "%A, %d %B %Y (%H:%M:%S)" "date" 50,
+            Run Date "%A, %d %B %Y (%H:%M:%S)" "date" 10,
                 
             -- Network up and down
             Run Network "enp0s31f6" [
@@ -77,5 +77,5 @@ Config {
         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "  %StdinReader% } <fc=#8BE9FD> %date% </fc>  { <fc=#fee11a> %LPMR% </fc> <fc=#FFB86C>%cpu% </fc><fc=#FF5555> %memory% </fc><fc=#82AAFF> %disku% </fc><fc=#c3e88d> %enp0s31f6% </fc><fc=#e1acff><fn=1></fn> %pacupdate% %alsa:default:Master%  </fc>"
+        , template = "  %StdinReader% } <fc=#8BE9FD> %date% </fc>  { <fc=#fee11a> %LPMR% </fc> <fc=#FFB86C>%cpu% </fc><fc=#FF5555> %memory% </fc><fc=#82AAFF> %disku% </fc><fc=#c3e88d> %enp0s31f6% </fc><fc=#e1acff><fn=1></fn> %pacupdate%</fc> <fc=#00ff00>%alsa:default:Master%  </fc>"
         }
