@@ -9,11 +9,13 @@ import XMonad.Actions.CycleWS (moveTo, shiftTo, WSType(..), nextScreen, prevScre
 import XMonad.Actions.WithAll (sinkAll, killAll)
 import XMonad.Actions.UpdatePointer
 
+import XMonad.Util.Cursor as Cur
 import XMonad.Util.EZConfig (additionalKeysP, removeKeysP)
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Run (runProcessWithInput, safeSpawn, spawnPipe)
 
 import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.DynamicBars
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.WorkspaceHistory
 import XMonad.Hooks.DynamicLog
@@ -55,13 +57,14 @@ myFocusColor :: String
 myFocusColor  = "#ff79c6"
 
 myWorkspaces :: [String]
-myWorkspaces = ["web", "code", "term", "4", "5", "6", "7", "8", "9"]
+myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 myStartupHook :: X ()
 myStartupHook = do
+        setDefaultCursor xC_left_ptr                                    -- fix default cursor being a cross
+        -- spawnOnce "xsetroot -cursor_name left_ptr"                      -- remove X cursor https://wiki.haskell.org/Xmonad/Frequently_asked_questions#Setting_the_X_cursor
         spawnOnce "nitrogen --restore &"                                -- restore wallpaper
         spawnOnce "autorandr -c &"                                      -- auto set monitor order based on saved configuration
-        spawnOnce "xsetroot -cursor_name left_ptr"                      -- remove X cursor https://wiki.haskell.org/Xmonad/Frequently_asked_questions#Setting_the_X_cursor
         spawnOnce "setxkbmap -option compose:ralt"                      -- set compose key to write accented characters
         spawnOnce "xinput --set-prop 9 'libinput Accel Speed' -0.65"    -- set mouse speed
         spawnOnce "picom -CG &"
@@ -154,50 +157,45 @@ myDeletedKeys =
     , ("M-S-q")      -- Remove default quit xmonad
     ]
 
+-- xmproc0 = spawnPipe "xmobar -x 0 /home/oxy/.config/xmobar/xmobar0.hs"
+-- xmproc1 = spawnPipe "xmobar -x 0 /home/oxy/.config/xmobar/xmobar1.hs"
+
+barCreator :: DynamicStatusBar
+barCreator (S sid) = spawnPipe $ "xmobar --screen " ++ show sid ++ " /home/oxy/.config/xmobar/xmobarrc.hs"
+
+barDestroyer :: DynamicStatusBarCleanup
+barDestroyer = return ()
+
+myLogPP :: PP
+myLogPP = xmobarPP {
+    ppCurrent = xmobarColor "#a7c3ff" "" . wrap "[" "]",
+    ppVisible = xmobarColor "#82AAFF" "" . wrap "(" ")",
+    ppHidden = xmobarColor "#82AAFF" "" . wrap "*" "",
+    ppTitle = xmobarColor "#b3afc2" "" . shorten 60,
+    ppHiddenNoWindows = \str -> "",
+    ppLayout = \str -> "",
+    ppSep =  "  ",
+    ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"
+}
+
+myLogPPActive :: PP
+myLogPPActive = myLogPP {
+    ppCurrent = xmobarColor "#ffff00" "" . wrap "[" "]"
+}
+
 main :: IO ()
 main = do
-    xmproc0 <- spawnPipe "xmobar -x 0 /home/oxy/.config/xmobar/xmobarrc0"
-    xmproc1 <- spawnPipe "xmobar -x 0 /home/oxy/.config/xmobar/xmobarrc1"
-    xmonad $ docks $ ewmh def
+    xmonad $ docks def
         {
-            layoutHook            = avoidStruts $ myLayoutHook,
-            manageHook            = myManageHook <+> manageDocks,
-            modMask               = myModMask,
-            terminal              = myTerminal,
-            startupHook           = myStartupHook,
-            workspaces            = myWorkspaces,
-            borderWidth           = myBorderWidth,
-            normalBorderColor     = myNormColor,
-            focusedBorderColor    = myFocusColor,
-            logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP {
-                ppOutput = \x -> hPutStrLn xmproc0 x >> hPutStrLn xmproc1 x,
-
-                -- Current workspace in xmobar
-                ppCurrent = xmobarColor "#c3e88d" "" . wrap "[" "]",
-
-                -- Visible but not current workspace
-                ppVisible = xmobarColor "#c3e88d" "",
-
-                -- Hidden workspaces in xmobar
-                ppHidden = xmobarColor "#82AAFF" "" . wrap "*" "",
-
-                -- Hidden workspaces (no windows)
-                ppHiddenNoWindows = xmobarColor "#77578c" "",
-                ppLayout  = (
-                    \layout -> case layout of
-                    "tall" -> ""
-                ),
-
-                -- Title of active window in xmobar
-                ppTitle = xmobarColor "#b3afc2" "" . shorten 60,
-
-                -- Separators in xmobar
-                ppSep =  "<fc=#666666> <fn=2></fn> </fc>",
-
-                -- Urgent workspace
-                ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!",
-                
-                ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
-            }
-
+            layoutHook              = avoidStruts $ myLayoutHook,
+            manageHook              = myManageHook <+> manageDocks,
+            modMask                 = myModMask,
+            terminal                = myTerminal,
+            startupHook             = myStartupHook <+> dynStatusBarStartup barCreator barDestroyer,
+            workspaces              = myWorkspaces,
+            borderWidth             = myBorderWidth,
+            normalBorderColor       = myNormColor,
+            focusedBorderColor      = myFocusColor,
+            logHook                 = workspaceHistoryHook <+> myLogHook <+> multiPP myLogPPActive myLogPP,
+            handleEventHook         = dynStatusBarEventHook barCreator barDestroyer
         } `additionalKeysP` myKeys `removeKeysP` myDeletedKeys

@@ -7,7 +7,7 @@ Config {
         ],
         bgColor = "#000",
         fgColor = "#ff79c6",
-        position = Static { xpos = 0 , ypos = 0, width = 1920, height = 24 },
+        position = Top,
         lowerOnStart = True,
         hideOnStart = False,
         allDesktops = True,
@@ -65,7 +65,7 @@ Config {
 
             Run Alsa "default" "Master"
             [
-                "-t", "<fn=1><status></fn> <volume>",
+                "-t", "<fn=1><status></fn> <volume>%",
                 "--", "--on", "", "--off", "\xf6a9",
                 "-h", "\xf028",
                 "-m", "\xf027",
@@ -73,9 +73,9 @@ Config {
             ],
 
             -- Prints out the left side items such as workspaces, layout, etc.
-            Run UnsafeStdinReader
+            Run StdinReader
         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "  %UnsafeStdinReader% } <fc=#8BE9FD> %date% </fc>  { <fc=#fee11a> %LPMR% </fc> <fc=#FFB86C>%cpu% </fc><fc=#FF5555> %memory% </fc><fc=#82AAFF> %disku% </fc><fc=#c3e88d> %enp0s31f6% </fc><fc=#e1acff><fn=1></fn> %pacupdate% %alsa:default:Master%  </fc>"
+        , template = "  %StdinReader% } <fc=#8BE9FD> %date% </fc>  { <fc=#fee11a> %LPMR% </fc> <fc=#FFB86C>%cpu% </fc><fc=#FF5555> %memory% </fc><fc=#82AAFF> %disku% </fc><fc=#c3e88d> %enp0s31f6% </fc><fc=#e1acff><fn=1></fn> %pacupdate% %alsa:default:Master%  </fc>"
         }
