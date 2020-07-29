@@ -81,14 +81,12 @@ mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spaci
 mySpacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
 -- Define gaps and limit windows
-tall     = renamed [Replace "tall"]
-            $ limitWindows 6
-            $ mySpacing 8
-            $ ResizableTall 1 (3/100) (1/2) []
+tall    = renamed [Replace "tall"]
+        $ limitWindows 6
+        $ mySpacing 8
+        $ ResizableTall 1 (3/100) (1/2) []
 
-myLayoutHook = myDefaultLayout
-                where
-                    myDefaultLayout = tall
+myLayoutHook = tall
 
 myLogHook :: X ()
 myLogHook = fadeInactiveLogHook fadeAmount >> updatePointer (0.5, 0.5) (0, 0)
@@ -168,8 +166,8 @@ barDestroyer = return ()
 
 myLogPP :: PP
 myLogPP = xmobarPP {
-    ppCurrent = xmobarColor "#a7c3ff" "" . wrap "[" "]",
-    ppVisible = xmobarColor "#82AAFF" "" . wrap "(" ")",
+    ppCurrent = xmobarColor "#a7c3ff" "" . wrap "(" ")",
+    ppVisible = xmobarColor "#82AAFF" "" .  wrap "*" "",
     ppHidden = xmobarColor "#82AAFF" "" . wrap "*" "",
     ppTitle = xmobarColor "#b3afc2" "" . shorten 60,
     ppHiddenNoWindows = \str -> "",
