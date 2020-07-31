@@ -58,13 +58,18 @@
 | <kbd>super</kbd>+<kbd>lshift</kbd>+<kbd>escape</kbd> | reboot |
 | <kbd>super</kbd>+<kbd>escape</kbd> | shutdown |
 
-##### System
+##### Layout
 | Key binding | Action |
 | --: | :--: |
 | <kbd>super</kbd>+<kbd>lshift</kbd>+<kbd>tab</kbd> | Rotate all windows except master |
 | <kbd>super</kbd>+<kbd>lctrl</kbd>+<kbd>tab</kbd> | Rotate all windows including master |
 | <kbd>super</kbd>+<kbd>kb_multiply</kbd> | Increase number of windows in master |
 | <kbd>super</kbd>+<kbd>kb_divide</kbd> | Decrease number of windows in master |
+| <kbd>super</kbd>+<kbd>h</kbd> | Shrink horizontally window width |
+| <kbd>super</kbd>+<kbd>l</kbd> | Expand horizontally window width |
+| <kbd>super</kbd>+<kbd>lctrl</kbd>+<kbd>j</kbd> | Shrink vertically window width |
+| <kbd>super</kbd>+<kbd>lctrl</kbd>+<kbd>k</kbd> | Expand vertically window width |
+| <kbd>super</kbd>+<kbd>F11</kbd> | Toggle fullscreen |
 
 ##### Mouse
 | Key binding | Action |

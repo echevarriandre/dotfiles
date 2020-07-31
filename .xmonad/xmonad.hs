@@ -8,11 +8,13 @@ import XMonad.Actions.CopyWindow (kill1, killAllOtherCopies)
 import XMonad.Actions.CycleWS (moveTo, shiftTo, WSType(..), nextScreen, prevScreen)
 import XMonad.Actions.WithAll (sinkAll, killAll)
 import XMonad.Actions.UpdatePointer
+import XMonad.Actions.NoBorders
 
 import XMonad.Util.Cursor as Cur
 import XMonad.Util.EZConfig (additionalKeysP, removeKeysP, additionalMouseBindings)
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Run (runProcessWithInput, safeSpawn, spawnPipe)
+import XMonad.Util.NamedScratchpad
 
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.DynamicBars
@@ -27,6 +29,8 @@ import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Renamed (renamed, Rename(Replace))
 import XMonad.Layout.LimitWindows (limitWindows, increaseLimit, decreaseLimit)
 import XMonad.Layout.ResizableTile
+import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
+import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
 
 import Data.Monoid
 import Data.Map (Map(), fromList)
@@ -71,13 +75,15 @@ myStartupHook = do
         spawnOnce "picom -CG &"
         spawnOnce "redshift &"
 
+myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
-     [ 
+    [ 
+        -- Use xprops to find class name
         className =? "KeePassXC" --> doFloat,
-        className =? "discord" --> doFloat,
-        title =? "Calculator" --> doFloat,
-        title =? "Nitrogen" --> doFloat
-     ] <+> manageDocks
+        -- className =? "discord" --> doFloat,
+        className =? "Gnome-calculator" --> doFloat,
+        className =? "Nitrogen" --> doFloat
+    ] <+> namedScratchpadManageHook myScratchPads <+> manageDocks
 
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
@@ -94,6 +100,63 @@ myLogHook :: X ()
 myLogHook = fadeInactiveLogHook fadeAmount >> updatePointer (0.5, 0.5) (0, 0)
     where fadeAmount = 1.0
 
+myScratchPads :: [NamedScratchpad]
+myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
+                ]
+  where
+    spawnTerm  = myTerminal ++ " --class scratchpad"
+    findTerm   = resource =? "scratchpad"
+    manageTerm = customFloating $ W.RationalRect l t w h
+               where
+                 h = 0.9
+                 w = 0.9
+                 t = 0.95 -h
+                 l = 0.95 -w
+
+barCreator :: DynamicStatusBar
+barCreator (S sid) = spawnPipe $ "xmobar --screen " ++ show sid ++ " /home/oxy/.config/xmobar/xmobarrc.hs"
+
+barDestroyer :: DynamicStatusBarCleanup
+barDestroyer = return ()
+
+myLogPP :: PP
+myLogPP = xmobarPP {
+    ppCurrent = xmobarColor "#a7c3ff" "" . wrap "[" "]",
+    ppVisible = xmobarColor "#82AAFF" "". wrap "*" "",
+    ppHidden = xmobarColor "#82AAFF" "" . wrap "*" "",
+    ppTitle = xmobarColor "#b3afc2" "" . shorten 60,
+    ppHiddenNoWindows = \str -> "",
+    ppLayout = \str -> "",
+    ppSep =  "  ",
+    ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"
+}
+
+myLogPPActive :: PP
+myLogPPActive = myLogPP {
+    ppCurrent = xmobarColor "#ffff00" "" . wrap "[" "]"
+}
+
+main :: IO ()
+main = do
+    xmonad $ docks def
+        {
+            layoutHook              = avoidStruts $ myLayoutHook,
+            manageHook              = myManageHook <+> manageDocks,
+            modMask                 = myModMask,
+            terminal                = myTerminal,
+            startupHook             = myStartupHook <+> dynStatusBarStartup barCreator barDestroyer,
+            workspaces              = myWorkspaces,
+            borderWidth             = myBorderWidth,
+            normalBorderColor       = myNormColor,
+            focusedBorderColor      = myFocusColor,
+            logHook                 = workspaceHistoryHook <+> myLogHook <+> multiPP myLogPPActive myLogPP,
+            handleEventHook         = dynStatusBarEventHook barCreator barDestroyer
+        } `additionalKeysP` myKeys `removeKeysP` myDeletedKeys `additionalMouseBindings` myMouseKeys
+
+
+--------------------
+--  KEY BINDINGS  --
+--------------------
 myKeys :: [(String, X ())]
 myKeys =
     [
@@ -119,6 +182,10 @@ myKeys =
     -- Workspaces
         ("M-,", prevScreen),                       -- Switch focus to prev monitor
         ("M-.", nextScreen),                       -- Switch focus to next monitor
+
+        -- Scratchpads
+        ("M-C-<Return>", namedScratchpadAction myScratchPads "terminal"),
+
     
     -- Multimedia Keys
         --, ("<XF86AudioPlay>", spawn "cmus toggle")
@@ -152,9 +219,8 @@ myKeys =
         ("M-l", sendMessage Expand),                       -- Expand horiz window width
         ("M-C-j", sendMessage MirrorShrink),               -- Shrink vert window width
         ("M-C-k", sendMessage MirrorExpand),               -- Exoand vert window width
-
-        (("M-button4"), sendMessage Shrink)
-        -- ((0, 5), sendMessage Expand)
+        -- ("M-<F11>", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts)
+        ("M-<F11>", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts <+> withFocused toggleBorder)
     ] ++
     [
         -- Change screen order to use with SUPER+[w, e]
@@ -174,44 +240,5 @@ myDeletedKeys :: [(String)]
 myDeletedKeys = 
     [ ("M-p")        -- Remove default open menu
     , ("M-S-q")      -- Remove default quit xmonad
+    , ("M-q")        -- Remove default restart xmonad
     ]
-
-barCreator :: DynamicStatusBar
-barCreator (S sid) = spawnPipe $ "xmobar --screen " ++ show sid ++ " /home/oxy/.config/xmobar/xmobarrc.hs"
-
-barDestroyer :: DynamicStatusBarCleanup
-barDestroyer = return ()
-
-myLogPP :: PP
-myLogPP = xmobarPP {
-    ppCurrent = xmobarColor "#a7c3ff" "" . wrap "(" ")",
-    ppVisible = xmobarColor "#82AAFF" "" .  wrap "*" "",
-    ppHidden = xmobarColor "#82AAFF" "" . wrap "*" "",
-    ppTitle = xmobarColor "#b3afc2" "" . shorten 60,
-    ppHiddenNoWindows = \str -> "",
-    ppLayout = \str -> "",
-    ppSep =  "  ",
-    ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"
-}
-
-myLogPPActive :: PP
-myLogPPActive = myLogPP {
-    ppCurrent = xmobarColor "#ffff00" "" . wrap "[" "]"
-}
-
-main :: IO ()
-main = do
-    xmonad $ docks def
-        {
-            layoutHook              = avoidStruts $ myLayoutHook,
-            manageHook              = myManageHook <+> manageDocks,
-            modMask                 = myModMask,
-            terminal                = myTerminal,
-            startupHook             = myStartupHook <+> dynStatusBarStartup barCreator barDestroyer,
-            workspaces              = myWorkspaces,
-            borderWidth             = myBorderWidth,
-            normalBorderColor       = myNormColor,
-            focusedBorderColor      = myFocusColor,
-            logHook                 = workspaceHistoryHook <+> myLogHook <+> multiPP myLogPPActive myLogPP,
-            handleEventHook         = dynStatusBarEventHook barCreator barDestroyer
-        } `additionalKeysP` myKeys `removeKeysP` myDeletedKeys `additionalMouseBindings` myMouseKeys
