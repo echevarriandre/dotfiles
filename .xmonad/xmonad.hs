@@ -71,7 +71,7 @@ myStartupHook = do
         spawnOnce "nitrogen --restore &"                                -- restore wallpaper
         spawnOnce "autorandr -c &"                                      -- auto set monitor order based on saved configuration
         spawnOnce "setxkbmap -option compose:ralt"                      -- set compose key to write accented characters
-        spawnOnce "xinput --set-prop 9 'libinput Accel Speed' -0.65"    -- set mouse speed
+        spawnOnce "xinput --set-prop $(xinput list | grep -w "Logitech G403 Prodigy Gaming Mouse" | head -n 1 | awk '{print $8}' | cut -d'=' -f2) 'libinput Accel Speed' -0.65"    -- set mouse speed
         spawnOnce "picom -CG &"
         spawnOnce "redshift &"
 
