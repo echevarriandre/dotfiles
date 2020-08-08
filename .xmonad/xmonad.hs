@@ -71,7 +71,7 @@ myStartupHook = do
         spawnOnce "nitrogen --restore &"                                -- restore wallpaper
         spawnOnce "autorandr -c &"                                      -- auto set monitor order based on saved configuration
         spawnOnce "setxkbmap -option compose:ralt"                      -- set compose key to write accented characters
-        spawnOnce "xinput --set-prop $(xinput list | grep -w "Logitech G403 Prodigy Gaming Mouse" | head -n 1 | awk '{print $8}' | cut -d'=' -f2) 'libinput Accel Speed' -0.65"    -- set mouse speed
+        spawnOnce "xinput --set-prop $(xinput list | grep -w \"Logitech G403 Prodigy Gaming Mouse\" | head -n 1 | awk '{print $8}' | cut -d'=' -f2) 'libinput Accel Speed' -0.65"    -- set mouse speed
         spawnOnce "picom -CG &"
         spawnOnce "redshift &"
 
@@ -224,9 +224,10 @@ myKeys =
     ] ++
     [
         -- Change screen order to use with SUPER+[w, e]
-        (mask ++ "M-" ++ [key], screenWorkspace scr >>= flip whenJust (windows . action))
-         | (key, scr)  <- zip "we" [1,0] -- was [0,1,2]
-         , (action, mask) <- [ (W.view, "") , (W.shift, "S-")]
+        -- Not needed if nvidia driver is installed
+        -- (mask ++ "M-" ++ [key], screenWorkspace scr >>= flip whenJust (windows . action))
+        --  | (key, scr)  <- zip "we" [1,0] -- was [0,1,2]
+        --  , (action, mask) <- [ (W.view, "") , (W.shift, "S-")]
     ]
 
 myMouseKeys = [
