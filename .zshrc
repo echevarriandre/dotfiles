@@ -6,7 +6,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # If you come from bash you might have to change your $PATH.
-PATH="$HOME/.local/bin${PATH:+:${PATH}}"
+path+=('/home/oxy/.local/bin')
+export PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="/home/oxy/.oh-my-zsh"
