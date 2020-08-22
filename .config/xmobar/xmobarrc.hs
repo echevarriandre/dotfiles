@@ -1,7 +1,7 @@
 -- http://projects.haskell.org/xmobar/
 
 Config { 
-        font = "xft:DroidSansMono Nerd Font Mono:weight=bold:pixelsize=12:antialias=true:hinting=false",
+        font = "xft:mononoki Nerd Font:weight=bold:pixelsize=13:antialias=true:hinting=false",
         additionalFonts = [
             "xft:Font Awesome 5 Free Solid:pixelsize=12"
         ],

@@ -85,13 +85,14 @@ myManageHook = composeAll
         className =? "Nitrogen" --> doFloat
     ] <+> namedScratchpadManageHook myScratchPads <+> manageDocks
 
+-- Change first boolean for smart borders
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
-mySpacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
+mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
 -- Define gaps and limit windows
 tall    = renamed [Replace "tall"]
         $ limitWindows 6
-        $ mySpacing 8
+        $ mySpacing 4
         $ ResizableTall 1 (3/100) (1/2) []
 
 myLayoutHook = tall
@@ -121,7 +122,7 @@ barDestroyer = return ()
 
 myLogPP :: PP
 myLogPP = xmobarPP {
-    ppCurrent = xmobarColor "#a7c3ff" "" . wrap "[" "]",
+    ppCurrent = xmobarColor "#a7c3ff" "" . wrap "(" ")",
     ppVisible = xmobarColor "#82AAFF" "". wrap "*" "",
     ppHidden = xmobarColor "#82AAFF" "" . wrap "*" "",
     ppTitle = xmobarColor "#b3afc2" "" . shorten 60,
@@ -133,7 +134,7 @@ myLogPP = xmobarPP {
 
 myLogPPActive :: PP
 myLogPPActive = myLogPP {
-    ppCurrent = xmobarColor "#ffff00" "" . wrap "[" "]"
+    ppCurrent = xmobarColor "#ffff00" "" . wrap "(" ")"
 }
 
 main :: IO ()
