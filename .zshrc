@@ -7,6 +7,7 @@ fi
 
 # If you come from bash you might have to change your $PATH.
 path+=('/home/oxy/.local/bin')
+path+=($HOME/.dotnet/tools)
 export PATH
 
 # Path to your oh-my-zsh installation.
