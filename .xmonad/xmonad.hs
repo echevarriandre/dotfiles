@@ -24,6 +24,7 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.FadeInactive
 import XMonad.Hooks.ManageDocks (docks, avoidStruts, manageDocks, ToggleStruts(..))
 
+import XMonad.Layout.Tabbed
 import XMonad.Layout.Spacing
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Renamed (renamed, Rename(Replace))
@@ -94,8 +95,19 @@ tall    = renamed [Replace "tall"]
         $ limitWindows 6
         $ mySpacing 4
         $ ResizableTall 1 (3/100) (1/2) []
+tabs    = renamed [Replace "tabs"]
+        $ tabbed shrinkText myTabConfig
+  where
+    myTabConfig = def { fontName            = "xft:Mononoki Nerd Font:regular:pixelsize=11"
+                      , activeColor         = "#ff79c6"
+                      , inactiveColor       = "#000000"
+                      , activeBorderColor   = "#ff79c6"
+                      , inactiveBorderColor = "#000000"
+                      , activeTextColor     = "#ffffff"
+                      , inactiveTextColor   = "#d0d0d0"
+                      }
 
-myLayoutHook = tall
+myLayoutHook = tall ||| tabs
 
 myLogHook :: X ()
 myLogHook = fadeInactiveLogHook fadeAmount >> updatePointer (0.5, 0.5) (0, 0)
@@ -212,6 +224,7 @@ myKeys =
         ("M-<Escape>", spawn "shutdown now"),
 
     -- Layouts
+        ("M-C-l", sendMessage NextLayout),                -- Change to next layout
         ("M-S-<Tab>", rotSlavesDown),                       -- Rotate all windows except master and keep focus in place
         ("M-C-<Tab>", rotAllDown),                          -- Rotate all the windows in the current stack
         ("M-<KP_Multiply>", sendMessage (IncMasterN 1)),    -- Increase number of clients in master pane
