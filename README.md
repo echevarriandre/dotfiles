@@ -32,6 +32,7 @@
 | <kbd>super</kbd>+<kbd>lctrl</kbd>+<kbd>c</kbd> | Kill active window |
 | <kbd>super</kbd>+<kbd>lshift</kbd>+<kbd>a</kbd> | Kill all windows in the active workspace |
 
+
 ##### Windows Navigation
 | Key binding | Action |
 | --: | :--: |
@@ -57,6 +58,11 @@
 | --: | :--: |
 | <kbd>super</kbd>+<kbd>lshift</kbd>+<kbd>escape</kbd> | reboot |
 | <kbd>super</kbd>+<kbd>escape</kbd> | shutdown |
+
+##### Tree Select
+| Key binding | Action |
+| --: | :--: |
+| <kbd>super</kbd>+<kbd>l</kbd> | open treeselect |
 
 ##### Layout
 | Key binding | Action |

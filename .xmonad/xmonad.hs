@@ -9,6 +9,7 @@ import XMonad.Actions.CycleWS (moveTo, shiftTo, WSType(..), nextScreen, prevScre
 import XMonad.Actions.WithAll (sinkAll, killAll)
 import XMonad.Actions.UpdatePointer
 import XMonad.Actions.NoBorders
+import qualified XMonad.Actions.TreeSelect as TS
 
 import XMonad.Util.Cursor as Cur
 import XMonad.Util.EZConfig (additionalKeysP, removeKeysP, additionalMouseBindings)
@@ -33,6 +34,7 @@ import XMonad.Layout.ResizableTile
 import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
 
+import Data.Tree
 import Data.Monoid
 import Data.Map (Map(), fromList)
 import qualified XMonad.StackSet as W
@@ -40,7 +42,7 @@ import System.Exit (exitSuccess)
 import System.IO (hPutStrLn)
 
 myFont :: String
-myFont = "xft:mononoki Nerd Font:bold:size=9:antialias=true:hinting=true"
+myFont = "xft:mononoki Nerd Font:bold:size=10:antialias=true:hinting=true"
 
 -- Sets modkey to super/windows key
 myModMask :: KeyMask
@@ -49,6 +51,10 @@ myModMask = mod4Mask
 -- Sets default terminal
 myTerminal :: String
 myTerminal = "alacritty"
+
+-- Sets vim as editor for tree select
+myEditor :: String
+myEditor = myTerminal ++ " -e vim "
 
 -- Sets border width for windows
 myBorderWidth :: Dimension
@@ -63,7 +69,72 @@ myFocusColor :: String
 myFocusColor  = "#ff79c6"
 
 myWorkspaces :: [String]
-myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+myWorkspaces = ["web", "code", "sys", "4", "5", "6", "7", "8", "9"]
+
+treeselectAction :: TS.TSConfig (X ()) -> X ()
+treeselectAction a = TS.treeselectAction a
+   [ Node (TS.TSNode "code" "" (return ()))
+        [ Node (TS.TSNode "vs code" "" (spawn "code")) []
+        , Node (TS.TSNode "insomnia" "" (spawn "insomnia")) []
+        , Node (TS.TSNode "tableplus" "" (spawn "tableplus")) []
+        ]
+    , Node (TS.TSNode "apps" "" (return ()))
+        [ Node (TS.TSNode "firefox" "" (spawn "firefox")) []
+        , Node (TS.TSNode "discord" "" (spawn "discord")) []
+        , Node (TS.TSNode "redshift" "" (spawn "redshift")) []
+        , Node (TS.TSNode "qutebrowser" "" (spawn "qutebrowser")) []
+        , Node (TS.TSNode "calculator" "" (spawn "gnome-calculator")) []
+        , Node (TS.TSNode "thunar" "" (spawn "thunar")) []
+        , Node (TS.TSNode "virtualbox" "" (spawn "VirtualBox")) []
+        ]
+    , Node (TS.TSNode "settings" "" (return ()))
+        [ Node (TS.TSNode "alacritty" "" (spawn "alacritty")) []
+        , Node (TS.TSNode "lxappearance" "" (spawn "lxappearance")) []
+        , Node (TS.TSNode "pavucontrol" "" (spawn "pavucontrol")) []
+        , Node (TS.TSNode "nitrogen" "" (spawn "nitrogen")) []
+        , Node (TS.TSNode "nvidia settings" "" (spawn "nvidia-settings")) []
+        ]
+    , Node (TS.TSNode "power" "" (return ()))
+        [ Node (TS.TSNode "reboot" "" (spawn "reboot")) []
+        , Node (TS.TSNode "shutdown" "" (spawn "shutdown")) []
+        ]
+   ]
+
+
+tsDefaultConfig :: TS.TSConfig a
+tsDefaultConfig = TS.TSConfig { TS.ts_hidechildren = True
+                              , TS.ts_background   = 0x00000000
+                              , TS.ts_font         = myFont
+                              , TS.ts_node         = (0xffffffff, 0xff000000)
+                              , TS.ts_nodealt      = (0xffffffff, 0xff000000)
+                              , TS.ts_highlight    = (0xffffffff, 0xffff79c6)
+                              , TS.ts_extra        = 0xffffff00
+                              , TS.ts_node_width   = 200
+                              , TS.ts_node_height  = 23
+                              , TS.ts_originX      = 0
+                              , TS.ts_originY      = 0
+                              , TS.ts_indent       = 80
+                              , TS.ts_navigate     = myTreeNavigation
+                              }
+
+
+
+myTreeNavigation = fromList
+    [ ((0, xK_Escape),   TS.cancel)
+    , ((0, xK_Return),   TS.select)
+    , ((0, xK_space),    TS.select)
+    , ((0, xK_Up),       TS.movePrev)
+    , ((0, xK_Down),     TS.moveNext)
+    , ((0, xK_Left),     TS.moveParent)
+    , ((0, xK_Right),    TS.moveChild)
+    , ((0, xK_k),        TS.movePrev)
+    , ((0, xK_j),        TS.moveNext)
+    , ((0, xK_h),        TS.moveParent)
+    , ((0, xK_l),        TS.moveChild)
+    , ((0, xK_o),        TS.moveHistBack)
+    , ((0, xK_i),        TS.moveHistForward)
+    ]
+
 
 myStartupHook :: X ()
 myStartupHook = do
@@ -94,7 +165,7 @@ mySpacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
 tall    = renamed [Replace "tall"]
         $ limitWindows 6
         $ mySpacing 4
-        $ ResizableTall 1 (3/100) (1/2) []
+        $ ResizableTall 1 (3/100) (5/8) []
 tabs    = renamed [Replace "tabs"]
         $ tabbed shrinkText myTabConfig
   where
@@ -218,6 +289,10 @@ myKeys =
         ("M-M1-c", spawn "code"),
         ("M-M1-a", spawn "keepassxc"),
         ("M-M1-d", spawn "discord"),
+
+    -- Tree Select/
+        ("M-t", treeselectAction tsDefaultConfig),
+
 
     -- System
         ("M-S-<Escape>", spawn "reboot"),
