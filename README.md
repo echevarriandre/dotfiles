@@ -61,6 +61,7 @@
 ##### Layout
 | Key binding | Action |
 | --: | :--: |
+| <kbd>super</kbd>+<kbd>ctrl</kbd>+<kbd>l</kbd> | Change to next layout |
 | <kbd>super</kbd>+<kbd>lshift</kbd>+<kbd>tab</kbd> | Rotate all windows except master |
 | <kbd>super</kbd>+<kbd>lctrl</kbd>+<kbd>tab</kbd> | Rotate all windows including master |
 | <kbd>super</kbd>+<kbd>kb_multiply</kbd> | Increase number of windows in master |
