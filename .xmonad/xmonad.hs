@@ -87,7 +87,7 @@ myManageHook = composeAll
 
 -- Change first boolean for smart borders
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
-mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
+mySpacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
 -- Define gaps and limit windows
 tall    = renamed [Replace "tall"]
@@ -122,9 +122,9 @@ barDestroyer = return ()
 
 myLogPP :: PP
 myLogPP = xmobarPP {
-    ppCurrent = xmobarColor "#a7c3ff" "" . wrap "(" ")",
-    ppVisible = xmobarColor "#82AAFF" "". wrap "*" "",
-    ppHidden = xmobarColor "#82AAFF" "" . wrap "*" "",
+    ppCurrent = xmobarColor "#f3add9" "" . wrap "(" ")",
+    ppVisible = xmobarColor "#ec77c1" "",
+    ppHidden = xmobarColor "#ec77c1" "",
     ppTitle = xmobarColor "#b3afc2" "" . shorten 60,
     ppHiddenNoWindows = \str -> "",
     ppLayout = \str -> "",

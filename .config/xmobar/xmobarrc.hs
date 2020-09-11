@@ -15,27 +15,27 @@ Config {
         iconRoot = ".",  -- default: "."
         commands = [ 
             -- Time and date
-            Run Date "%A, %d %B %Y (%H:%M:%S)" "date" 10,
+            Run Date "%A, <fc=#ec77c1>%d</fc> %B <fc=#ec77c1>%Y</fc> (<fc=#ec77c1>%H</fc>:<fc=#ec77c1>%M</fc>:<fc=#ec77c1>%S</fc>)" "date" 10,
                 
             -- Network up and down
             Run Network "enp0s31f6" [
-                "-t", "<fn=1>\xf0ab</fn> <rx>kb <fn=1>\xf0aa</fn> <tx>kb"
+                "-t", "<fn=1>\xf062</fn> <fc=#ec77c1><rx>kb</fc> <fn=1>\xf063</fn> <fc=#ec77c1><tx>kb</fc>"
             ] 20,
 
             -- Cpu usage in percent
             Run Cpu [
-                "-t", "<fn=1>\xf108</fn> cpu: (<total>%)",
+                "-t", "cpu: <fc=#ec77c1><total>% </fc>",
                 "-H","50",
                 "--high","red"
             ] 20,
 
             -- Ram used number and percent
             Run Memory [
-                "-t", "<fn=1>\xf233</fn> mem: <used>M (<usedratio>%)"
+                "-t", "mem: <fc=#ec77c1><used>M</fc> (<fc=#ec77c1><usedratio>%</fc>)"
             ] 20,
 
             -- Disk space free
-            Run DiskU [("/", "<fn=1>\xf0c7</fn> hdd: <free> free")] [] 60,
+            Run DiskU [("/", "hdd: <fc=#ec77c1><free></fc> free")] [] 60,
 
             -- Runs custom script to check for pacman updates.
             -- This script is in my dotfiles repo in .local/bin.
@@ -60,16 +60,16 @@ Config {
                 ("considerable cloudiness", "\xf740")
             ]
             [
-                "-t", "<fn=1><skyConditionS></fn> <tempC>°C"
+                "-t", "<fc=#ec77c1><fn=1><skyConditionS></fn> <tempC>°C</fc>"
             ] 36000,
 
             Run Alsa "default" "Master"
             [
-                "-t", "<fn=1><status></fn> <volume>%",
+                "-t", "<fn=1><status></fn> <fc=#ec77c1><volume>%</fc>",
                 "--", "--on", "", "--off", "\xf6a9",
-                "-h", "\xf028",
-                "-m", "\xf027",
-                "-l", "\xf026"
+                "-h", "<fc=#dfdfdf>\xf028</fc>",
+                "-m", "<fc=#dfdfdf>\xf027</fc>",
+                "-l", "<fc=#dfdfdf>\xf026</fc>"
             ],
 
             -- Prints out the left side items such as workspaces, layout, etc.
@@ -77,5 +77,5 @@ Config {
         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "  %StdinReader% } <fc=#8BE9FD> %date% </fc>  { <fc=#fee11a> %LPMR% </fc> <fc=#FFB86C>%cpu% </fc><fc=#FF5555> %memory% </fc><fc=#82AAFF> %disku% </fc><fc=#c3e88d> %enp0s31f6% </fc><fc=#e1acff><fn=1></fn> %pacupdate%</fc> <fc=#00ff00>%alsa:default:Master%  </fc>"
+        , template = "  %StdinReader% } <fc=#dfdfdf> %date% </fc>  { <fc=#dfdfdf> %LPMR% </fc> <fc=#dfdfdf>%cpu% </fc><fc=#dfdfdf> %memory% </fc><fc=#dfdfdf> %disku% </fc><fc=#dfdfdf> %enp0s31f6% </fc><fc=#dfdfdf><fn=1></fn></fc> <fc=#ec77c1>%pacupdate%</fc> <fc=#dfdfdf>%alsa:default:Master%  </fc>"
         }
