@@ -68,8 +68,19 @@ myNormColor   = "#000"
 myFocusColor :: String
 myFocusColor  = "#ff79c6"
 
+xmobarEscape :: String -> String
+xmobarEscape = concatMap doubleLts
+  where
+        doubleLts '<' = "<<"
+        doubleLts x   = [x]
+
 myWorkspaces :: [String]
-myWorkspaces = ["web", "code", "sys", "4", "5", "6", "7", "8", "9"]
+myWorkspaces = clickable . (map xmobarEscape)
+            $ ["www", "dev", "sys", "4", "5", "6", "7", "8", "9"]
+        where
+        clickable l = [ "<action=xdotool key super+" ++ show (n) ++ ">" ++ ws ++ "</action>" |
+                      (i,ws) <- zip [1..9] l,
+                      let n = i ]
 
 treeselectAction :: TS.TSConfig (X ()) -> X ()
 treeselectAction a = TS.treeselectAction a

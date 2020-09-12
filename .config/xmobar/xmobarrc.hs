@@ -73,9 +73,9 @@ Config {
             ],
 
             -- Prints out the left side items such as workspaces, layout, etc.
-            Run StdinReader
+            Run UnsafeStdinReader
         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "  %StdinReader% } <fc=#dfdfdf> %date% </fc>  { <fc=#dfdfdf> %LPMR% </fc> <fc=#dfdfdf>%cpu% </fc><fc=#dfdfdf> %memory% </fc><fc=#dfdfdf> %disku% </fc><fc=#dfdfdf> %enp0s31f6% </fc><fc=#dfdfdf><fn=1></fn></fc> <fc=#ec77c1>%pacupdate%</fc> <fc=#dfdfdf>%alsa:default:Master%  </fc>"
+        , template = "  %UnsafeStdinReader% } <fc=#dfdfdf> %date% </fc>  { <fc=#dfdfdf> %LPMR% </fc> <fc=#dfdfdf>%cpu% </fc><fc=#dfdfdf> %memory% </fc><fc=#dfdfdf> %disku% </fc><fc=#dfdfdf> %enp0s31f6% </fc><fc=#dfdfdf><fn=1></fn></fc> <fc=#ec77c1>%pacupdate%</fc> <fc=#dfdfdf>%alsa:default:Master%  </fc>"
         }
