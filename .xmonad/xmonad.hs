@@ -73,12 +73,12 @@ myWorkspaces = ["web", "code", "sys", "4", "5", "6", "7", "8", "9"]
 
 treeselectAction :: TS.TSConfig (X ()) -> X ()
 treeselectAction a = TS.treeselectAction a
-   [ Node (TS.TSNode "code" "" (return ()))
+   [ Node (TS.TSNode "+ code" "" (return ()))
         [ Node (TS.TSNode "vs code" "" (spawn "code")) []
         , Node (TS.TSNode "insomnia" "" (spawn "insomnia")) []
         , Node (TS.TSNode "tableplus" "" (spawn "tableplus")) []
         ]
-    , Node (TS.TSNode "apps" "" (return ()))
+    , Node (TS.TSNode "+ apps" "" (return ()))
         [ Node (TS.TSNode "firefox" "" (spawn "firefox")) []
         , Node (TS.TSNode "discord" "" (spawn "discord")) []
         , Node (TS.TSNode "redshift" "" (spawn "redshift")) []
@@ -86,17 +86,25 @@ treeselectAction a = TS.treeselectAction a
         , Node (TS.TSNode "calculator" "" (spawn "gnome-calculator")) []
         , Node (TS.TSNode "thunar" "" (spawn "thunar")) []
         , Node (TS.TSNode "virtualbox" "" (spawn "VirtualBox")) []
+        , Node (TS.TSNode "vlc" "" (spawn "vlc")) []
         ]
-    , Node (TS.TSNode "settings" "" (return ()))
+    , Node (TS.TSNode "+ system" "" (return ()))
         [ Node (TS.TSNode "alacritty" "" (spawn "alacritty")) []
         , Node (TS.TSNode "lxappearance" "" (spawn "lxappearance")) []
         , Node (TS.TSNode "pavucontrol" "" (spawn "pavucontrol")) []
         , Node (TS.TSNode "nitrogen" "" (spawn "nitrogen")) []
         , Node (TS.TSNode "nvidia settings" "" (spawn "nvidia-settings")) []
+        , Node (TS.TSNode "htop" "" (spawn (myTerminal ++ " -e htop"))) []
         ]
-    , Node (TS.TSNode "power" "" (return ()))
+    , Node (TS.TSNode "+ xmonad" "" (return ()))
+        [ Node (TS.TSNode "Recompile" "" (spawn "xmonad --recompile")) []
+        , Node (TS.TSNode "Restart" "" (spawn "xmonad --restart")) []
+        , Node (TS.TSNode "Next layout" "" (spawn "~/.xmonad/xmonadctl next-layout")) []
+        , Node (TS.TSNode "Quit" "" (io exitSuccess)) []
+        ]
+    , Node (TS.TSNode "+ power" "" (return ()))
         [ Node (TS.TSNode "reboot" "" (spawn "reboot")) []
-        , Node (TS.TSNode "shutdown" "" (spawn "shutdown")) []
+        , Node (TS.TSNode "shutdown" "" (spawn "shutdown -now")) []
         ]
    ]
 
@@ -113,7 +121,7 @@ tsDefaultConfig = TS.TSConfig { TS.ts_hidechildren = True
                               , TS.ts_node_height  = 23
                               , TS.ts_originX      = 0
                               , TS.ts_originY      = 0
-                              , TS.ts_indent       = 80
+                              , TS.ts_indent       = 20
                               , TS.ts_navigate     = myTreeNavigation
                               }
 
