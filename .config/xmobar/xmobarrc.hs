@@ -39,7 +39,7 @@ Config {
 
             -- Runs custom script to check for pacman updates.
             -- This script is in my dotfiles repo in .local/bin.
-            Run Com "pacupdate" [] "" 3000,
+            Run Com "pacupdate" [] "updates" 100,
 
             -- Runs a standard shell command 'uname -r' to get kernel version
             Run Com "uname" ["-r"] "" 3600,
@@ -60,7 +60,7 @@ Config {
                 ("considerable cloudiness", "\xf740")
             ]
             [
-                "-t", "<fc=#ff79c6><fn=1><skyConditionS></fn> <tempC>°C</fc>"
+                "-t", "<fn=1><skyConditionS></fn> <fc=#ff79c6><tempC>°C</fc>"
             ] 36000,
 
             Run Alsa "default" "Master"
@@ -77,5 +77,5 @@ Config {
         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "  %UnsafeStdinReader% } <fc=#f8f8f2> %date% </fc>  { <fc=#f8f8f2> %LPMR% </fc> <fc=#f8f8f2>%cpu% </fc><fc=#f8f8f2> %memory% </fc><fc=#f8f8f2> %disku% </fc><fc=#f8f8f2> %enp0s31f6% </fc><fc=#f8f8f2><fn=1></fn></fc> <fc=#ff79c6>%pacupdate%</fc> <fc=#f8f8f2>%alsa:default:Master%  </fc>"
+        , template = "  %UnsafeStdinReader% } <fc=#f8f8f2> %date% </fc>  { <action=`firefox https://www.ipma.pt/en/otempo/prev.localidade.hora/#Leiria&Leiria`><fc=#f8f8f2> %LPMR% </fc></action> <fc=#f8f8f2>%cpu% </fc><fc=#f8f8f2> %memory% </fc><fc=#f8f8f2> %disku% </fc><fc=#f8f8f2> %enp0s31f6% </fc><fc=#f8f8f2><fn=1></fn></fc> <action=`pacupdate` button=1><fc=#ff79c6>%updates%</fc></action> <action=`pavucontrol` button=1><fc=#f8f8f2>%alsa:default:Master%  </fc></action>"
         }

@@ -225,6 +225,7 @@ myManageHook = composeAll
     [ 
         -- Use xprops to find class name
         className =? "KeePassXC" --> doFloat,
+        className =? "Pavucontrol" --> doFloat,
         -- className =? "discord" --> doFloat,
         className =? "Gnome-calculator" --> doFloat,
         className =? "Nitrogen" --> doFloat
@@ -304,7 +305,6 @@ myLogPPActive = myLogPP {
 ------------
 --  MAIN  --
 ------------
-
 main :: IO ()
 main = do
     xmonad 
@@ -312,7 +312,7 @@ main = do
         $ dynamicProjects projects
         def {
             layoutHook              = avoidStruts $ myLayoutHook,
-            manageHook              = myManageHook <+> manageDocks,
+            manageHook              = myManageHook,
             modMask                 = myModMask,
             terminal                = myTerminal,
             startupHook             = myStartupHook <+> dynStatusBarStartup barCreator barDestroyer,

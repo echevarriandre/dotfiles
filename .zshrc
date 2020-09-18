@@ -6,7 +6,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # If you come from bash you might have to change your $PATH.
-path+=('/home/oxy/.local/bin')
+path+=($HOME/.local/bin)
 path+=($HOME/.dotnet/tools)
 export PATH
 
