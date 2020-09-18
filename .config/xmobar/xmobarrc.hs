@@ -5,8 +5,8 @@ Config {
         additionalFonts = [
             "xft:Font Awesome 5 Free Solid:pixelsize=12"
         ],
-        bgColor = "#000",
-        fgColor = "#ff79c6",
+        bgColor = "#000000", -- // #282a36
+        fgColor = "#44475a",
         position = Top,
         lowerOnStart = True,
         hideOnStart = False,
@@ -15,27 +15,27 @@ Config {
         iconRoot = ".",  -- default: "."
         commands = [ 
             -- Time and date
-            Run Date "%A, <fc=#ec77c1>%d</fc> %B <fc=#ec77c1>%Y</fc> (<fc=#ec77c1>%H</fc>:<fc=#ec77c1>%M</fc>:<fc=#ec77c1>%S</fc>)" "date" 10,
+            Run Date "%A, <fc=#ff79c6>%d</fc> %B <fc=#ff79c6>%Y</fc> (<fc=#ff79c6>%H</fc>:<fc=#ff79c6>%M</fc>:<fc=#ff79c6>%S</fc>)" "date" 10,
                 
             -- Network up and down
             Run Network "enp0s31f6" [
-                "-t", "<fn=1>\xf062</fn> <fc=#ec77c1><rx>kb</fc> <fn=1>\xf063</fn> <fc=#ec77c1><tx>kb</fc>"
+                "-t", "<fn=1>\xf062</fn> <fc=#ff79c6><rx>kb</fc> <fn=1>\xf063</fn> <fc=#ff79c6><tx>kb</fc>"
             ] 20,
 
             -- Cpu usage in percent
             Run Cpu [
-                "-t", "cpu: <fc=#ec77c1><total>% </fc>",
+                "-t", "cpu: <fc=#ff79c6><total>% </fc>",
                 "-H","50",
                 "--high","red"
             ] 20,
 
             -- Ram used number and percent
             Run Memory [
-                "-t", "mem: <fc=#ec77c1><used>M</fc> (<fc=#ec77c1><usedratio>%</fc>)"
+                "-t", "mem: <fc=#ff79c6><used>M</fc> (<fc=#ff79c6><usedratio>%</fc>)"
             ] 20,
 
             -- Disk space free
-            Run DiskU [("/", "hdd: <fc=#ec77c1><free></fc> free")] [] 60,
+            Run DiskU [("/", "hdd: <fc=#ff79c6><free></fc> free")] [] 60,
 
             -- Runs custom script to check for pacman updates.
             -- This script is in my dotfiles repo in .local/bin.
@@ -60,16 +60,16 @@ Config {
                 ("considerable cloudiness", "\xf740")
             ]
             [
-                "-t", "<fc=#ec77c1><fn=1><skyConditionS></fn> <tempC>°C</fc>"
+                "-t", "<fc=#ff79c6><fn=1><skyConditionS></fn> <tempC>°C</fc>"
             ] 36000,
 
             Run Alsa "default" "Master"
             [
-                "-t", "<fn=1><status></fn> <fc=#ec77c1><volume>%</fc>",
+                "-t", "<fn=1><status></fn> <fc=#ff79c6><volume>%</fc>",
                 "--", "--on", "", "--off", "\xf6a9",
-                "-h", "<fc=#dfdfdf>\xf028</fc>",
-                "-m", "<fc=#dfdfdf>\xf027</fc>",
-                "-l", "<fc=#dfdfdf>\xf026</fc>"
+                "-h", "<fc=#f8f8f2>\xf028</fc>",
+                "-m", "<fc=#f8f8f2>\xf027</fc>",
+                "-l", "<fc=#f8f8f2>\xf026</fc>"
             ],
 
             -- Prints out the left side items such as workspaces, layout, etc.
@@ -77,5 +77,5 @@ Config {
         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "  %UnsafeStdinReader% } <fc=#dfdfdf> %date% </fc>  { <fc=#dfdfdf> %LPMR% </fc> <fc=#dfdfdf>%cpu% </fc><fc=#dfdfdf> %memory% </fc><fc=#dfdfdf> %disku% </fc><fc=#dfdfdf> %enp0s31f6% </fc><fc=#dfdfdf><fn=1></fn></fc> <fc=#ec77c1>%pacupdate%</fc> <fc=#dfdfdf>%alsa:default:Master%  </fc>"
+        , template = "  %UnsafeStdinReader% } <fc=#f8f8f2> %date% </fc>  { <fc=#f8f8f2> %LPMR% </fc> <fc=#f8f8f2>%cpu% </fc><fc=#f8f8f2> %memory% </fc><fc=#f8f8f2> %disku% </fc><fc=#f8f8f2> %enp0s31f6% </fc><fc=#f8f8f2><fn=1></fn></fc> <fc=#ff79c6>%pacupdate%</fc> <fc=#f8f8f2>%alsa:default:Master%  </fc>"
         }

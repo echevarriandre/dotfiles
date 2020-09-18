@@ -9,12 +9,14 @@ import XMonad.Actions.CycleWS (moveTo, shiftTo, WSType(..), nextScreen, prevScre
 import XMonad.Actions.WithAll (sinkAll, killAll)
 import XMonad.Actions.UpdatePointer
 import XMonad.Actions.NoBorders
+import XMonad.Actions.DynamicProjects
+import XMonad.Actions.SpawnOn
 import qualified XMonad.Actions.TreeSelect as TS
 
 import XMonad.Util.Cursor as Cur
 import XMonad.Util.EZConfig (additionalKeysP, removeKeysP, additionalMouseBindings)
 import XMonad.Util.SpawnOnce
-import XMonad.Util.Run (runProcessWithInput, safeSpawn, spawnPipe)
+import XMonad.Util.Run (runProcessWithInput, safeSpawn, spawnPipe, runInTerm)
 import XMonad.Util.NamedScratchpad
 
 import XMonad.Hooks.EwmhDesktops
@@ -41,32 +43,52 @@ import qualified XMonad.StackSet as W
 import System.Exit (exitSuccess)
 import System.IO (hPutStrLn)
 
-myFont :: String
+-----------------
+--  VARIABLES  --
+-----------------
 myFont = "xft:mononoki Nerd Font:bold:size=10:antialias=true:hinting=true"
-
--- Sets modkey to super/windows key
-myModMask :: KeyMask
 myModMask = mod4Mask
-
--- Sets default terminal
-myTerminal :: String
-myTerminal = "alacritty"
-
--- Sets vim as editor for tree select
-myEditor :: String
-myEditor = myTerminal ++ " -e vim "
-
--- Sets border width for windows
-myBorderWidth :: Dimension
 myBorderWidth = 2
-
--- Border color of normal windows
-myNormColor :: String
 myNormColor   = "#000"
-
- -- Border color of focused windows
-myFocusColor :: String
 myFocusColor  = "#ff79c6"
+
+---------------------------------------------------
+--  THEME (https://draculatheme.com/contribute/) --
+---------------------------------------------------
+backgroundColor = "#282a36"
+focusColor      = "#44475a"
+textColor       = "#f8f8f2"
+cyan            = "#8be9fd"
+green           = "#50fa7b"
+orange          = "#ffb86c"
+pink            = "#ff79c6"
+purple          = "#bd93f9"
+red             = "#ff5555"
+yellow          = "#f1fa8c"
+black           = "#000000"
+white           = "#ffffff"
+
+--------------------
+--  APPLICATIONS  --
+--------------------
+
+myTerminal = "alacritty"
+myBrowser = "firefox"
+myEditor = myTerminal ++ " -e vim "
+myLauncher = "rofi -matching fuzzy -modi combi -show combi -combi-modi run,drun"
+
+--------------------------------------
+--  WORKSPACES CLICKABLE IN XMOBAR  --
+--------------------------------------
+ws1 = "www"
+ws2 = "dev"
+ws3 = "sys"
+ws4 = "4"
+ws5 = "5"
+ws6 = "6"
+ws7 = "7"
+ws8 = "8"
+ws9 = "9"
 
 xmobarEscape :: String -> String
 xmobarEscape = concatMap doubleLts
@@ -75,12 +97,41 @@ xmobarEscape = concatMap doubleLts
         doubleLts x   = [x]
 
 myWorkspaces :: [String]
-myWorkspaces = clickable . (map xmobarEscape)
-            $ ["www", "dev", "sys", "4", "5", "6", "7", "8", "9"]
-        where
-        clickable l = [ "<action=xdotool key super+" ++ show (n) ++ ">" ++ ws ++ "</action>" |
-                      (i,ws) <- zip [1..9] l,
-                      let n = i ]
+myWorkspaces = [ws1, ws2, ws3, ws4, ws5, ws6, ws7, ws8, ws9]
+
+-- Clickable workspaces, doesn't work with dynamic projects
+-- myWorkspaces = clickable . (map xmobarEscape)
+--             $ [ws1, ws2, ws3, ws4, ws5, ws6, ws7, ws8, ws9]
+--         where
+--         clickable l = [ "<action=xdotool key super+" ++ show (n) ++ ">" ++ ws ++ "</action>" |
+--                       (i,ws) <- zip [1..9] l,
+--                       let n = i ]
+
+-- DynamicProjects
+projects :: [Project]
+projects =  [ Project   { projectName       = ws3
+                        , projectDirectory  = "~/"
+                        , projectStartHook  = Just $ do spawnOn ws3 myTerminal
+                                                        spawnOn ws3 myTerminal
+                                                        spawnOn ws3 myTerminal
+                        }
+            , Project   { projectName       = ws1
+                        , projectDirectory  = "~/"
+                        , projectStartHook  = Just $ do spawnOn ws1 myBrowser
+                        }
+            , Project   { projectName       = ws2
+                        , projectDirectory  = "~/"
+                        , projectStartHook  = Just $ do spawnOn ws2 "code"
+                        }
+            , Project   { projectName       = ws9
+                        , projectDirectory  = "~/"
+                        , projectStartHook  = Just $ do spawnOn ws9 "firefox --private-window" 
+                        }
+            ]
+
+------------------
+--  TREESELECT  --
+------------------
 
 treeselectAction :: TS.TSConfig (X ()) -> X ()
 treeselectAction a = TS.treeselectAction a
@@ -115,7 +166,7 @@ treeselectAction a = TS.treeselectAction a
         ]
     , Node (TS.TSNode "+ power" "" (return ()))
         [ Node (TS.TSNode "reboot" "" (spawn "reboot")) []
-        , Node (TS.TSNode "shutdown" "" (spawn "shutdown -now")) []
+        , Node (TS.TSNode "shutdown" "" (spawn "shutdown now")) []
         ]
    ]
 
@@ -154,6 +205,9 @@ myTreeNavigation = fromList
     , ((0, xK_i),        TS.moveHistForward)
     ]
 
+----------------------
+--  CONFIGURATIONS  --
+------------------------
 
 myStartupHook :: X ()
 myStartupHook = do
@@ -189,12 +243,12 @@ tabs    = renamed [Replace "tabs"]
         $ tabbed shrinkText myTabConfig
   where
     myTabConfig = def { fontName            = "xft:Mononoki Nerd Font:regular:pixelsize=11"
-                      , activeColor         = "#ff79c6"
-                      , inactiveColor       = "#000000"
-                      , activeBorderColor   = "#ff79c6"
-                      , inactiveBorderColor = "#000000"
-                      , activeTextColor     = "#ffffff"
-                      , inactiveTextColor   = "#d0d0d0"
+                      , activeColor         = focusColor
+                      , inactiveColor       = backgroundColor
+                      , activeBorderColor   = focusColor
+                      , inactiveBorderColor = backgroundColor
+                      , activeTextColor     = white
+                      , inactiveTextColor   = textColor
                       }
 
 myLayoutHook = tall ||| tabs
@@ -202,6 +256,10 @@ myLayoutHook = tall ||| tabs
 myLogHook :: X ()
 myLogHook = fadeInactiveLogHook fadeAmount >> updatePointer (0.5, 0.5) (0, 0)
     where fadeAmount = 1.0
+
+-------------------
+--  SCRATCHPADS  --
+-------------------
 
 myScratchPads :: [NamedScratchpad]
 myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
@@ -216,6 +274,10 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                  t = 0.95 -h
                  l = 0.95 -w
 
+--------------
+--  XMOBAR  --
+--------------
+
 barCreator :: DynamicStatusBar
 barCreator (S sid) = spawnPipe $ "xmobar --screen " ++ show sid ++ " /home/oxy/.config/xmobar/xmobarrc.hs"
 
@@ -224,25 +286,31 @@ barDestroyer = return ()
 
 myLogPP :: PP
 myLogPP = xmobarPP {
-    ppCurrent = xmobarColor "#f3add9" "" . wrap "(" ")",
-    ppVisible = xmobarColor "#ec77c1" "",
-    ppHidden = xmobarColor "#ec77c1" "",
-    ppTitle = xmobarColor "#b3afc2" "" . shorten 60,
+    ppCurrent = xmobarColor pink "" . wrap "(" ")",
+    ppVisible = xmobarColor focusColor "",
+    ppHidden = xmobarColor focusColor "",
+    ppTitle = xmobarColor textColor "" . shorten 60,
     ppHiddenNoWindows = \str -> "",
     ppLayout = \str -> "",
     ppSep =  "  ",
-    ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"
+    ppUrgent = xmobarColor red "" . wrap "!" "!"
 }
 
 myLogPPActive :: PP
 myLogPPActive = myLogPP {
-    ppCurrent = xmobarColor "#ffff00" "" . wrap "(" ")"
+    ppCurrent = xmobarColor yellow "" . wrap "(" ")"
 }
+
+------------
+--  MAIN  --
+------------
 
 main :: IO ()
 main = do
-    xmonad $ docks def
-        {
+    xmonad 
+        $ docks
+        $ dynamicProjects projects
+        def {
             layoutHook              = avoidStruts $ myLayoutHook,
             manageHook              = myManageHook <+> manageDocks,
             modMask                 = myModMask,
@@ -303,8 +371,8 @@ myKeys =
     -- Applications
         ("M-M1-f", spawn "firefox"),
         ("M-M1-e", spawn "thunar"),
-        ("M-<Space>", spawn "rofi -show run"),
-        ("M-C-<Space>", spawn "rofi -show"),
+        ("M-<Space>", spawn myLauncher),
+        -- ("M-C-<Space>", spawn "rofi -show"),
         ("M-M1-c", spawn "code"),
         ("M-M1-a", spawn "keepassxc"),
         ("M-M1-d", spawn "discord"),
