@@ -18,6 +18,7 @@ import XMonad.Util.EZConfig (additionalKeysP, removeKeysP, additionalMouseBindin
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Run (runProcessWithInput, safeSpawn, spawnPipe, runInTerm)
 import XMonad.Util.NamedScratchpad
+import XMonad.Util.NamedWindows (getName)
 
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.DynamicBars
@@ -25,9 +26,11 @@ import XMonad.Hooks.SetWMName
 import XMonad.Hooks.WorkspaceHistory
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.FadeInactive
+import XMonad.Hooks.ManageHelpers(doFullFloat, doCenterFloat, isFullscreen, isDialog)
 import XMonad.Hooks.ManageDocks (docks, avoidStruts, manageDocks, ToggleStruts(..))
 
 import XMonad.Layout.Tabbed
+import XMonad.Layout.Gaps
 import XMonad.Layout.Spacing
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Renamed (renamed, Rename(Replace))
@@ -38,17 +41,20 @@ import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBO
 
 import Data.Tree
 import Data.Monoid
+import Data.Function (on)
+import Data.List (sortBy)
 import Data.Map (Map(), fromList)
 import qualified XMonad.StackSet as W
 import System.Exit (exitSuccess)
 import System.IO (hPutStrLn)
+import Control.Monad (forM_, join)
 
 -----------------
 --  VARIABLES  --
 -----------------
 myFont = "xft:mononoki Nerd Font:bold:size=10:antialias=true:hinting=true"
 myModMask = mod4Mask
-myBorderWidth = 2
+myBorderWidth = 3
 myNormColor   = "#000"
 myFocusColor  = "#ff79c6"
 
@@ -80,9 +86,9 @@ myLauncher = "rofi -matching fuzzy -modi combi -show combi -combi-modi run,drun"
 --------------------------------------
 --  WORKSPACES CLICKABLE IN XMOBAR  --
 --------------------------------------
-ws1 = "www"
-ws2 = "dev"
-ws3 = "sys"
+ws1 = "1"
+ws2 = "2"
+ws3 = "3"
 ws4 = "4"
 ws5 = "5"
 ws6 = "6"
@@ -211,25 +217,21 @@ myTreeNavigation = fromList
 
 myStartupHook :: X ()
 myStartupHook = do
-        setDefaultCursor xC_left_ptr                                    -- fix default cursor being a cross
-        -- spawnOnce "xsetroot -cursor_name left_ptr"                      -- remove X cursor https://wiki.haskell.org/Xmonad/Frequently_asked_questions#Setting_the_X_cursor
-        spawnOnce "nitrogen --restore &"                                -- restore wallpaper
-        spawnOnce "autorandr -c &"                                      -- auto set monitor order based on saved configuration
-        spawnOnce "setxkbmap -option compose:ralt"                      -- set compose key to write accented characters
-        spawnOnce "xinput --set-prop $(xinput list | grep -w \"Logitech G403 Prodigy Gaming Mouse\" | head -n 1 | awk '{print $8}' | cut -d'=' -f2) 'libinput Accel Speed' -0.65"    -- set mouse speed
-        spawnOnce "picom -CG &"
-        spawnOnce "redshift &"
+        spawnOnce "$HOME/.xmonad/scripts/autostart.sh"
+        -- setDefaultCursor xC_left_ptr                                    -- fix default cursor being a cross
 
-myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
-myManageHook = composeAll
-    [ 
-        -- Use xprops to find class name
-        className =? "KeePassXC" --> doFloat,
-        className =? "Pavucontrol" --> doFloat,
-        -- className =? "discord" --> doFloat,
-        className =? "Gnome-calculator" --> doFloat,
-        className =? "Nitrogen" --> doFloat
-    ] <+> namedScratchpadManageHook myScratchPads <+> manageDocks
+myManageHook = composeAll . concat $
+    [ [isDialog --> doCenterFloat]
+    , [className =? c --> doCenterFloat | c <- myClassFloats]
+    , [title =? t --> doFloat | t <- myTitleFloats]
+    , [resource =? r --> doFloat | r <- myResourceFloats]
+    , [resource =? i --> doIgnore | i <- myIgnores]
+    ]
+    where
+    myClassFloats = ["KeePassXC", "Pavucontrol", "Gnome-calculator", "Nitrogen"]
+    myTitleFloats = []
+    myResourceFloats = []
+    myIgnores = ["polybar"]
 
 -- Change first boolean for smart borders
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
@@ -279,49 +281,50 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
 --  XMOBAR  --
 --------------
 
-barCreator :: DynamicStatusBar
-barCreator (S sid) = spawnPipe $ "xmobar --screen " ++ show sid ++ " /home/oxy/.config/xmobar/xmobarrc.hs"
+-- barCreator :: DynamicStatusBar
+-- barCreator (S sid) = spawnPipe $ "xmobar --screen " ++ show sid ++ " /home/oxy/.config/xmobar/xmobarrc.hs"
 
-barDestroyer :: DynamicStatusBarCleanup
-barDestroyer = return ()
+-- barDestroyer :: DynamicStatusBarCleanup
+-- barDestroyer = return ()
 
-myLogPP :: PP
-myLogPP = xmobarPP {
-    ppCurrent = xmobarColor pink "" . wrap "(" ")",
-    ppVisible = xmobarColor focusColor "",
-    ppHidden = xmobarColor focusColor "",
-    ppTitle = xmobarColor textColor "" . shorten 60,
-    ppHiddenNoWindows = \str -> "",
-    ppLayout = \str -> "",
-    ppSep =  "  ",
-    ppUrgent = xmobarColor red "" . wrap "!" "!"
-}
+-- myLogPP :: PP
+-- myLogPP = xmobarPP {
+--     ppCurrent = xmobarColor pink "" . wrap "(" ")",
+--     ppVisible = xmobarColor focusColor "",
+--     ppHidden = xmobarColor focusColor "",
+--     ppTitle = xmobarColor textColor "" . shorten 60,
+--     ppHiddenNoWindows = \str -> "",
+--     ppLayout = \str -> "",
+--     ppSep =  "  ",
+--     ppUrgent = xmobarColor red "" . wrap "!" "!"
+-- }
 
-myLogPPActive :: PP
-myLogPPActive = myLogPP {
-    ppCurrent = xmobarColor yellow "" . wrap "(" ")"
-}
+-- myLogPPActive :: PP
+-- myLogPPActive = myLogPP {
+--     ppCurrent = xmobarColor yellow "" . wrap "(" ")"
+-- }
 
 ------------
 --  MAIN  --
 ------------
 main :: IO ()
 main = do
-    xmonad 
-        $ docks
-        $ dynamicProjects projects
+    -- forM_ [".xmonad-workspace-log", ".xmonad-title-log"] $ \file -> do
+    -- safeSpawn "mkfifo" ["/tmp/" ++ file]
+
+    xmonad . ewmh $ -- dynamicProjects projects
         def {
-            layoutHook              = avoidStruts $ myLayoutHook,
+            layoutHook              = gaps [(U,39), (D,9), (R,9), (L,9)] $ avoidStruts $ myLayoutHook,
             manageHook              = myManageHook,
             modMask                 = myModMask,
             terminal                = myTerminal,
-            startupHook             = myStartupHook <+> dynStatusBarStartup barCreator barDestroyer,
+            startupHook             = myStartupHook,
             workspaces              = myWorkspaces,
             borderWidth             = myBorderWidth,
             normalBorderColor       = myNormColor,
             focusedBorderColor      = myFocusColor,
-            logHook                 = workspaceHistoryHook <+> myLogHook <+> multiPP myLogPPActive myLogPP,
-            handleEventHook         = dynStatusBarEventHook barCreator barDestroyer
+            logHook                 = workspaceHistoryHook <+> myLogHook,
+            handleEventHook         = handleEventHook def <+> fullscreenEventHook
         } `additionalKeysP` myKeys `removeKeysP` myDeletedKeys `additionalMouseBindings` myMouseKeys
 
 
@@ -378,7 +381,7 @@ myKeys =
         ("M-M1-d", spawn "discord"),
 
     -- Tree Select/
-        ("M-t", treeselectAction tsDefaultConfig),
+        ("M-S-t", treeselectAction tsDefaultConfig),
 
 
     -- System

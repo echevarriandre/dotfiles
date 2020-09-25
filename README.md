@@ -16,6 +16,7 @@
 | ranger | Terminal file manager |
 | [scrot](https://wiki.archlinux.org/index.php/Screen_capture#scrot) | Window print |
 | [redshift](https://wiki.archlinux.org/index.php/Redshift) | Night light |
+| numlockx | Activate numlock on boot |
 
 ### # Keyboard Shortcuts
 

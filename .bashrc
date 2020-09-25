@@ -2,7 +2,9 @@
 # ~/.bashrc
 #
 
-PATH="$HOME/.local/bin${PATH:+:${PATH}}"
+path+=($HOME/.local/bin)
+path+=($HOME/.dotnet/tools)
+export PATH
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
