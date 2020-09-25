@@ -310,9 +310,9 @@ main = do
     -- forM_ [".xmonad-workspace-log", ".xmonad-title-log"] $ \file -> do
     -- safeSpawn "mkfifo" ["/tmp/" ++ file]
 
-    xmonad . ewmh $ -- dynamicProjects projects
+    xmonad . ewmh $ docks -- dynamicProjects projects
         def {
-            layoutHook              = gaps [(U,39), (D,9), (R,9), (L,9)] $ avoidStruts $ myLayoutHook,
+            layoutHook              = avoidStruts $ myLayoutHook,
             manageHook              = myManageHook,
             modMask                 = myModMask,
             terminal                = myTerminal,
@@ -321,7 +321,7 @@ main = do
             borderWidth             = myBorderWidth,
             normalBorderColor       = myNormColor,
             focusedBorderColor      = myFocusColor,
-            logHook                 = workspaceHistoryHook <+> myLogHook,
+            logHook                 = workspaceHistoryHook <+> myLogHook <+> dynamicLog,
             handleEventHook         = handleEventHook def <+> fullscreenEventHook
         } `additionalKeysP` myKeys `removeKeysP` myDeletedKeys `additionalMouseBindings` myMouseKeys
 
