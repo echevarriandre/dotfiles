@@ -220,18 +220,16 @@ myStartupHook = do
         spawnOnce "$HOME/.xmonad/scripts/autostart.sh"
         -- setDefaultCursor xC_left_ptr                                    -- fix default cursor being a cross
 
-myManageHook = composeAll . concat $
-    [ [isDialog --> doCenterFloat]
-    , [className =? c --> doCenterFloat | c <- myClassFloats]
-    , [title =? t --> doFloat | t <- myTitleFloats]
-    , [resource =? r --> doFloat | r <- myResourceFloats]
-    , [resource =? i --> doIgnore | i <- myIgnores]
-    ]
-    where
-    myClassFloats = ["KeePassXC", "Pavucontrol", "Gnome-calculator", "Nitrogen"]
-    myTitleFloats = []
-    myResourceFloats = []
-    myIgnores = ["polybar"]
+myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
+myManageHook = composeAll
+    [ 
+        -- Use xprops to find class name
+        className =? "KeePassXC" --> doFloat,
+        className =? "Pavucontrol" --> doFloat,
+        -- className =? "discord" --> doFloat,
+        className =? "Gnome-calculator" --> doFloat,
+        className =? "Nitrogen" --> doFloat
+    ] <+> namedScratchpadManageHook myScratchPads <+> manageDocks
 
 -- Change first boolean for smart borders
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
