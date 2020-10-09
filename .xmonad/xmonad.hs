@@ -49,15 +49,6 @@ import System.Exit (exitSuccess)
 import System.IO (hPutStrLn)
 import Control.Monad (forM_, join)
 
------------------
---  VARIABLES  --
------------------
-myFont = "xft:mononoki Nerd Font:bold:size=10:antialias=true:hinting=true"
-myModMask = mod4Mask
-myBorderWidth = 3
-myNormColor   = "#000"
-myFocusColor  = "#ff79c6"
-
 ---------------------------------------------------
 --  THEME (https://draculatheme.com/contribute/) --
 ---------------------------------------------------
@@ -73,6 +64,16 @@ red             = "#ff5555"
 yellow          = "#f1fa8c"
 black           = "#000000"
 white           = "#ffffff"
+
+-----------------
+--  VARIABLES  --
+-----------------
+myFont = "xft:mononoki Nerd Font:bold:size=10:antialias=true:hinting=true"
+myModMask = mod4Mask
+myBorderWidth = 3
+myNormColor   = "#000"
+myFocusColor  = red
+
 
 --------------------
 --  APPLICATIONS  --
@@ -312,7 +313,7 @@ main = do
 
     xmonad . ewmh $ docks -- dynamicProjects projects
         def {
-            layoutHook              = avoidStruts $ myLayoutHook,
+            layoutHook              = gaps [(U,10), (D,10), (R,10), (L,10)] $ avoidStruts $ myLayoutHook,
             manageHook              = myManageHook,
             modMask                 = myModMask,
             terminal                = myTerminal,
