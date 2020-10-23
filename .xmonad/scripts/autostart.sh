@@ -7,7 +7,7 @@ function run {
   fi
 }
 
-(sleep 2; run $HOME/.config/polybar/launch.sh) &
+#(sleep 2; run $HOME/.config/polybar/launch.sh) &
 
 #cursor active at boot
 xsetroot -cursor_name left_ptr &

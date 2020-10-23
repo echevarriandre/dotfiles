@@ -7,6 +7,7 @@ Config {
         ],
         bgColor = "#000000", -- // #282a36
         fgColor = "#44475a",
+        alpha = 255,
         position = Top,
         lowerOnStart = True,
         hideOnStart = False,
@@ -19,7 +20,8 @@ Config {
                 
             -- Network up and down
             Run Network "enp0s31f6" [
-                "-t", "<fn=1>\xf062</fn> <fc=#ff79c6><rx>kb</fc> <fn=1>\xf063</fn> <fc=#ff79c6><tx>kb</fc>"
+                -- "-t", "<fn=1>\xf062</fn> <fc=#ff79c6><rx>kb</fc> <fn=1>\xf063</fn> <fc=#ff79c6><tx>kb</fc>"
+                "-t", "up: <fc=#ff79c6><rx>kb</fc> down: <fc=#ff79c6><tx>kb</fc>"
             ] 20,
 
             -- Cpu usage in percent
@@ -39,7 +41,7 @@ Config {
 
             -- Runs custom script to check for pacman updates.
             -- This script is in my dotfiles repo in .local/bin.
-            Run Com "pacupdate" [] "updates" 100,
+            Run Com "/home/oxy/.local/bin/pacupdate" [] "updates" 100,
 
             -- Runs a standard shell command 'uname -r' to get kernel version
             Run Com "uname" ["-r"] "" 3600,
@@ -60,7 +62,8 @@ Config {
                 ("considerable cloudiness", "\xf740")
             ]
             [
-                "-t", "<fn=1><skyConditionS></fn> <fc=#ff79c6><tempC>°C</fc>"
+                -- "-t", "<fn=1><skyConditionS></fn> <fc=#ff79c6><tempC>°C</fc>"
+                "-t", "temp: <fc=#ff79c6><tempC>°C</fc>"
             ] 36000,
 
             Run Alsa "default" "Master"
@@ -72,10 +75,12 @@ Config {
                 "-l", "<fc=#f8f8f2>\xf026</fc>"
             ],
 
+            Run Com "/home/oxy/.config/xmobar/trayer-padding-icon.sh" [] "trayerpad" 20,
+
             -- Prints out the left side items such as workspaces, layout, etc.
-            Run UnsafeStdinReader
+            Run StdinReader
         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "  %UnsafeStdinReader% } <fc=#f8f8f2> %date% </fc>  { <action=`firefox https://www.ipma.pt/en/otempo/prev.localidade.hora/#Leiria&Leiria`><fc=#f8f8f2> %LPMR% </fc></action> <fc=#f8f8f2>%cpu% </fc><fc=#f8f8f2> %memory% </fc><fc=#f8f8f2> %disku% </fc><fc=#f8f8f2> %enp0s31f6% </fc><fc=#f8f8f2><fn=1></fn></fc> <action=`pacupdate` button=1><fc=#ff79c6>%updates%</fc></action> <action=`pavucontrol` button=1><fc=#f8f8f2>%alsa:default:Master%  </fc></action>"
+        , template = "  %StdinReader% } <fc=#f8f8f2> %date% </fc>  { <action=`firefox https://www.ipma.pt/en/otempo/prev.localidade.hora/#Leiria&Leiria`><fc=#f8f8f2>%LPMR%</fc></action> <fc=#f8f8f2>%cpu%</fc> <fc=#f8f8f2>%memory%</fc> <fc=#f8f8f2>%disku%</fc> <fc=#f8f8f2> %enp0s31f6% </fc><fc=#f8f8f2>upd:</fc> <action=`pacupdate` button=1><fc=#ff79c6>%updates%</fc></action> <action=`pavucontrol` button=1><fc=#f8f8f2>%alsa:default:Master%  </fc></action> %trayerpad%"
         }

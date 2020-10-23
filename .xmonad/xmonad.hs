@@ -122,14 +122,14 @@ projects =  [ Project   { projectName       = ws3
                                                         spawnOn ws3 myTerminal
                                                         spawnOn ws3 myTerminal
                         }
-            , Project   { projectName       = ws1
-                        , projectDirectory  = "~/"
-                        , projectStartHook  = Just $ do spawnOn ws1 myBrowser
-                        }
-            , Project   { projectName       = ws2
-                        , projectDirectory  = "~/"
-                        , projectStartHook  = Just $ do spawnOn ws2 "code"
-                        }
+            -- , Project   { projectName       = ws1
+            --             , projectDirectory  = "~/"
+            --             , projectStartHook  = Just $ do spawnOn ws1 myBrowser
+            --             }
+            -- , Project   { projectName       = ws2
+            --             , projectDirectory  = "~/"
+            --             , projectStartHook  = Just $ do spawnOn ws2 "code"
+            --             }
             , Project   { projectName       = ws9
                         , projectDirectory  = "~/"
                         , projectStartHook  = Just $ do spawnOn ws9 "firefox --private-window" 
@@ -280,50 +280,49 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
 --  XMOBAR  --
 --------------
 
--- barCreator :: DynamicStatusBar
--- barCreator (S sid) = spawnPipe $ "xmobar --screen " ++ show sid ++ " /home/oxy/.config/xmobar/xmobarrc.hs"
+barCreator :: DynamicStatusBar
+barCreator (S sid) = spawnPipe $ "xmobar --screen " ++ show sid ++ " /home/oxy/.config/xmobar/xmobarrc.hs"
 
--- barDestroyer :: DynamicStatusBarCleanup
--- barDestroyer = return ()
+barDestroyer :: DynamicStatusBarCleanup
+barDestroyer = return ()
 
--- myLogPP :: PP
--- myLogPP = xmobarPP {
---     ppCurrent = xmobarColor pink "" . wrap "(" ")",
---     ppVisible = xmobarColor focusColor "",
---     ppHidden = xmobarColor focusColor "",
---     ppTitle = xmobarColor textColor "" . shorten 60,
---     ppHiddenNoWindows = \str -> "",
---     ppLayout = \str -> "",
---     ppSep =  "  ",
---     ppUrgent = xmobarColor red "" . wrap "!" "!"
--- }
+myLogPP :: PP
+myLogPP = xmobarPP {
+    ppCurrent = xmobarColor pink "" . wrap "(" ")",
+    ppVisible = xmobarColor focusColor "",
+    ppHidden = xmobarColor focusColor "",
+    ppTitle = xmobarColor textColor "" . shorten 60,
+    ppHiddenNoWindows = \str -> "",
+    ppLayout = \str -> "",
+    ppSep =  "  ",
+    ppUrgent = xmobarColor red "" . wrap "!" "!"
+}
 
--- myLogPPActive :: PP
--- myLogPPActive = myLogPP {
---     ppCurrent = xmobarColor yellow "" . wrap "(" ")"
--- }
+myLogPPActive :: PP
+myLogPPActive = myLogPP {
+    ppCurrent = xmobarColor yellow "" . wrap "(" ")"
+}
 
 ------------
 --  MAIN  --
 ------------
 main :: IO ()
 main = do
-    -- forM_ [".xmonad-workspace-log", ".xmonad-title-log"] $ \file -> do
-    -- safeSpawn "mkfifo" ["/tmp/" ++ file]
-
-    xmonad . ewmh $ docks -- dynamicProjects projects
+    xmonad
+        $ docks
+        $ dynamicProjects projects
         def {
-            layoutHook              = gaps [(U,10), (D,10), (R,10), (L,10)] $ avoidStruts $ myLayoutHook,
+            layoutHook              = avoidStruts $ myLayoutHook,
             manageHook              = myManageHook,
             modMask                 = myModMask,
             terminal                = myTerminal,
-            startupHook             = myStartupHook,
+            startupHook             = myStartupHook <+> dynStatusBarStartup barCreator barDestroyer,
             workspaces              = myWorkspaces,
             borderWidth             = myBorderWidth,
             normalBorderColor       = myNormColor,
             focusedBorderColor      = myFocusColor,
-            logHook                 = workspaceHistoryHook <+> myLogHook <+> dynamicLog,
-            handleEventHook         = handleEventHook def <+> fullscreenEventHook
+            logHook                 = workspaceHistoryHook <+> myLogHook <+> multiPP myLogPPActive myLogPP,
+            handleEventHook         = dynStatusBarEventHook barCreator barDestroyer
         } `additionalKeysP` myKeys `removeKeysP` myDeletedKeys `additionalMouseBindings` myMouseKeys
 
 
