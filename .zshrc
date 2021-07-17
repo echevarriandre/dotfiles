@@ -15,7 +15,14 @@ export ZSH="/home/oxy/.oh-my-zsh"
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-plugins=(git)
+# Plugins:
+# https://github.com/zsh-users/zsh-autosuggestions
+# https://github.com/zsh-users/zsh-syntax-highlighting.git
+plugins=(
+git
+zsh-autosuggestions
+zsh-syntax-highlighting
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -25,3 +32,5 @@ alias homestead="cd ~/Homestead && vagrant up"
 
 # ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

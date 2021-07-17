@@ -10,18 +10,22 @@ env:
 
 font:
   normal:
-    family: Mononoki Nerd Font
+    family: mononoki
     style: regular
 
   bold:
-    family: mononoki Nerd Font
+    family: mononoki
 
   italic:
-    family: mononoki Nerd Font
+    family: mononoki
 
-  size: 13
+  size: 12
 
 window:
+  dimensions:
+    columns: 60
+    lines: 20
+
   padding:
     x: 20
     y: 10
@@ -46,7 +50,7 @@ scrolling:
 # Dracula https://draculatheme.com/alacritty
 colors:
   primary:
-    background: '0x000000'
+    background: '0x282a36'
     foreground: '0xf8f8f2'
 
   cursor:
@@ -96,8 +100,8 @@ key_bindings:
   - { key: Insert,   mods: Shift,         action: PasteSelection   }
   - { key: Key0,     mods: Control,       action: ResetFontSize    }
   - { key: Equals,   mods: Control,       action: IncreaseFontSize }
-  - { key: Add,      mods: Control,       action: IncreaseFontSize }
-  - { key: Subtract, mods: Control,       action: DecreaseFontSize }
+  - { key: NumpadAdd,      mods: Control,       action: IncreaseFontSize }
+  - { key: NumpadSubtract, mods: Control,       action: DecreaseFontSize }
   - { key: Minus,    mods: Control,       action: DecreaseFontSize }
 
   - { key: Paste,                    action: Paste                            }

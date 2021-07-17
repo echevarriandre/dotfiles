@@ -8,4 +8,4 @@ set listchars=tab:>-,trail:~,extends:>,precedes:<
 packadd! dracula
 syntax enable
 colorscheme dracula
-highlight Normal ctermfg=grey ctermbg=Black
+highlight Normal ctermfg=grey ctermbg=NONE
